@@ -1,0 +1,9 @@
+# Build context hygiene
+.git
+.gitignore
+*.md
+!README.md
+recovered/
+verify.py
+build.py
+*.bak
