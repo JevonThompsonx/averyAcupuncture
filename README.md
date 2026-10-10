@@ -91,7 +91,7 @@ python3 -m http.server 8099
 ### Optional: regenerate / edit programmatically
 
 ```bash
-python3 build.py    # rebuilds all 7 HTML pages from the recovered content
+python3 build.py    # rebuilds all 8 HTML pages from the recovered content
 python3 verify.py   # 70+ acceptance checks (see §6)
 ```
 
@@ -155,6 +155,7 @@ preserved exactly as-is, but only one can be right:
    8:00–5:30 p.m." The contact page says "Monday, Tuesday, Thursday: 8:30am–5:00pm."
    Both are rendered as found (each on its own page). **The client must confirm the real
    schedule** — then fix it in one place per page (`build.py` / the contact page body).
+   The JSON-LD opening-hours schema currently encodes the contact page's hours.
 2. **"New Patients" menu item** pointed to `#` (dead link) on the live site. It now
    points to the New Patients section of About Treatment. Confirm that's where it
    should go.
@@ -172,11 +173,11 @@ preserved exactly as-is, but only one can be right:
 
 ## 6. Verification performed
 
-`verify.py` runs the full acceptance suite — **96 checks, all passing** as of this build:
+`verify.py` runs the full acceptance suite — **all passing** as of this build:
 
 | Area | Checks |
 |---|---|
-| Pages parse, titles present | 7/7 |
+| Pages parse, titles present | 8/8 (news archive added; /naomi-brebes/ redirects upstream so no page needed) |
 | Zero hotlinked assets (all images local) | 7/7 |
 | Every `<img>` resolves on disk | 7/7 |
 | Every asset referenced from CSS (`url()`) resolves | 1/1 |
@@ -192,8 +193,8 @@ preserved exactly as-is, but only one can be right:
 | No duplicated images, no unlinked button-label artifacts | 14 |
 | Viewport, lang, alt text, mobile menu, reduced-motion | 26 |
 
-Plus a live HTTP smoke test: all 7 pages, the stylesheet, the script, and sample
-images returned `200` from a local server.
+Plus a live HTTP smoke test: all 8 pages, the stylesheet, the script, sitemap.xml,
+robots.txt, and sample images returned `200` from a local server.
 
 **The anti-fabrication gate (A9b) is proven, not assumed.** It compares every
 outbound URL in the rebuild against `recovered/live-external-links.json` — ground
