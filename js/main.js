@@ -1,6 +1,10 @@
-/* Avery Acupuncture — site behaviour: mobile nav, review cards, slider. No dependencies. */
+/* Avery Acupuncture — site behaviour: mobile nav, review cards, slider,
+   FAQ accordion, scroll-fade entrances. No dependencies. */
 (function () {
   "use strict";
+
+  var root = document.documentElement;
+  root.classList.add("js");
 
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("primary-nav");
@@ -20,23 +24,6 @@
       }
     });
   }
-
-  // Review cards: expand / collapse the full text
-  document.querySelectorAll(".grw__card").forEach(function (card) {
-    var btn = card.querySelector(".grw__more");
-    var quote = card.querySelector(".grw__text");
-    if (!btn || !quote) return;
-    // Hide the toggle when the text already fits
-    if (quote.scrollHeight <= quote.clientHeight + 4) {
-      btn.style.display = "none";
-      return;
-    }
-    btn.addEventListener("click", function () {
-      var open = card.classList.toggle("is-open");
-      btn.textContent = open ? "show less" : "read more";
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-  });
 
   // Review slider arrows + dots
   var slider = document.querySelector(".grw__slider");
@@ -71,5 +58,57 @@
         ticking = false;
       });
     });
+  }
+
+  // FAQ accordion (contact page): first item starts open, one at a time
+  document.querySelectorAll(".cp-faq__item").forEach(function (item) {
+    var btn = item.querySelector(".cp-faq__q");
+    var a = item.querySelector(".cp-faq__a");
+    var icon = item.querySelector(".cp-faq__icon");
+    if (!btn || !a) return;
+    if (item.classList.contains("is-open")) {
+      a.style.maxHeight = a.scrollHeight + "px";
+    }
+    btn.addEventListener("click", function () {
+      var wasOpen = item.classList.contains("is-open");
+      // close siblings (the live accordion keeps one panel open at a time)
+      document.querySelectorAll(".cp-faq__item").forEach(function (other) {
+        if (other === item) return;
+        other.classList.remove("is-open");
+        var oa = other.querySelector(".cp-faq__a");
+        var ob = other.querySelector(".cp-faq__q");
+        var oi = other.querySelector(".cp-faq__icon");
+        if (oa) oa.style.maxHeight = "0px";
+        if (ob) ob.setAttribute("aria-expanded", "false");
+        if (oi) oi.innerHTML = "+";
+      });
+      item.classList.toggle("is-open", !wasOpen);
+      btn.setAttribute("aria-expanded", !wasOpen ? "true" : "false");
+      if (icon) icon.innerHTML = !wasOpen ? "&times;" : "+";
+      a.style.maxHeight = !wasOpen ? a.scrollHeight + "px" : "0px";
+    });
+  });
+
+  // Scroll-fade entrances (live theme: fade + 45px slide over 750ms)
+  var fades = Array.prototype.slice.call(document.querySelectorAll(".fx"));
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
+    fades.forEach(function (el) { io.observe(el); });
+    // Anything already in view on load (or if the observer never fires)
+    window.addEventListener("load", function () {
+      fades.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) el.classList.add("is-in");
+      });
+    });
+  } else {
+    fades.forEach(function (el) { el.classList.add("is-in"); });
   }
 })();

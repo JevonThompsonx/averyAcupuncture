@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avery.jsquaredadventures.com/sitemap.xml

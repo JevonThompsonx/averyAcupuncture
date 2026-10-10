@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PAGES = ["index.html", "about-veronica.html", "about-treatment.html",
-         "conditions-treated.html", "contact.html", "office-policy.html", "privacy-policy.html"]
+         "conditions-treated.html", "contact.html", "office-policy.html",
+         "privacy-policy.html", "news.html"]
 
 fails, warns = [], []
 
@@ -162,16 +163,21 @@ live_links = set(json.load(open(os.path.join(ROOT, "recovered", "live-external-l
 ALLOWED_PREFIXES = (
     "https://fonts.googleapis.com", "https://fonts.gstatic.com",
     "https://www.googletagmanager.com",
-    "https://www.youtube.com/embed/",
-    "https://www.facebook.com/plugins/page.php",
+    "https://www.youtube.com/embed/", "https://www.youtube.com",
+    "https://www.facebook.com/plugins/page.php", "https://www.facebook.com",
+    "https://www.google.com", "https://www.wellness.com",
 )
 SELF_DOMAIN = "https://averyacupuncture.com"
+# origin of this rebuild (canonicals, OG URLs, sitemap pointer)
+SELF_ORIGIN = "https://avery.jsquaredadventures.com"
 
 def known(url):
     if url in live_links:                     # exact match first, raw (pb= payloads are %-encoded)
         return True
     u = unquote(url)                          # decode only for prefix/probe matching
     if u in live_links or url.startswith(SELF_DOMAIN):
+        return True
+    if u == SELF_ORIGIN or u.startswith(SELF_ORIGIN + "/"):
         return True
     if "youtube.com/embed/" in u:
         vid = u.split("youtube.com/embed/")[1].split("?")[0]

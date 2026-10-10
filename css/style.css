@@ -34,6 +34,26 @@
 
 html { scroll-behavior: smooth; }
 
+/* Skip link: invisible until keyboard-focused (no visual change otherwise). */
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  background: var(--green);
+  color: #fff;
+  padding: 0.6em 1em;
+  border-radius: 0;
+  transition: top 0.15s ease;
+}
+.skip:focus-visible { top: 1rem; color: #fff; }
+
+/* Keyboard focus indicator (never visible for mouse users). */
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--green-soft);
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   font-family: var(--sans);
@@ -179,10 +199,10 @@ strong, b { font-weight: 700; }
   padding: 0;
 }
 .site-nav > ul > li > a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 60px;
-  padding: 10px 12px;
+  display: block;
+  height: 60px;
+  line-height: 1;
+  padding: 12px 10px 0;
   font-family: var(--nav-serif);
   font-size: 0.875rem;
   letter-spacing: 0.105em;
@@ -194,8 +214,10 @@ strong, b { font-weight: 700; }
 }
 .site-nav .has-sub { position: relative; }
 .site-nav .has-sub > a::after {
-  /* Live uses a double chevron after New Patients. */
+  /* Live uses a double down-chevron after New Patients. */
   content: "\00BB";
+  display: inline-block;
+  transform: rotate(90deg);
   margin-left: 0.3em;
   font-size: 0.8em;
 }
@@ -217,6 +239,14 @@ strong, b { font-weight: 700; }
 .site-nav .has-sub:focus-within > .sub-menu {
   display: flex;
 }
+.site-nav > ul > li > a > span {
+  display: inline-block;
+  padding: 0.875em 6px;
+  /* Live nav spans all carry a transparent pill; the current page colors it. */
+  border: 1px solid transparent;
+  border-radius: 1400px;
+}
+.site-nav a[aria-current] > span { border-color: rgba(0, 0, 0, 0.075); }
 .site-nav .sub-menu a {
   display: block;
   padding: 0.6rem 1rem;
@@ -254,7 +284,7 @@ strong, b { font-weight: 700; }
 .hero__quote {
   margin: 0 auto;
   max-width: 1000px;
-  font-size: clamp(2rem, 4.5vw, 3.1rem);
+  font-size: 49.6px;
   text-transform: uppercase;
   line-height: 1.4;
   color: #fff;
@@ -279,6 +309,7 @@ strong, b { font-weight: 700; }
   padding: 0 0 4.0625rem;
 }
 .intro-band h2 {
+  letter-spacing: -0.035em;
   color: #fff;
   /* Measured live h3: 41.14px / 53.48px, single line,
      margins 51.4px top / 8.2px bottom. */
@@ -305,7 +336,8 @@ strong, b { font-weight: 700; }
   align-items: center;
 }
 .cta-row__text h2 {
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  letter-spacing: -0.035em;
+  font-size: 51.44px;
   /* Measured live CTA headline line-height: 1.1, zero margins. */
   line-height: 1.1;
   margin: 0;
@@ -348,10 +380,13 @@ strong, b { font-weight: 700; }
 }
 .grw {
   display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 1.5rem;
-  align-items: start;
+  grid-template-columns: 290px 1fr;
+  column-gap: 18px;
+  align-items: center;
 }
+.reviews__label { grid-column: 1 / -1; }
+.grw__summary { grid-column: 1; }
+.grw__track { grid-column: 2; }
 .grw__summary { font-size: 0.9rem; color: #333; }
 .grw__summary p { margin-bottom: 0.35em; }
 .grw__biz { font-weight: 600; color: #333; font-size: 0.95rem; }
@@ -385,10 +420,8 @@ strong, b { font-weight: 700; }
 .grw__slider {
   display: grid;
   grid-auto-flow: column;
-  /* Live fits exactly 3 cards in the track: (907 - 2×16) / 3 ≈ 291px.
-     Fixed (not minmax): in a scroll container minmax resolves to its
-     minimum, which narrows the cards and reflows their text. */
-  grid-auto-columns: 291px;
+  /* Live cards are 264px wide with 16px gutters (3 fit the 837px track). */
+  grid-auto-columns: 264px;
   gap: 1rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -402,7 +435,7 @@ strong, b { font-weight: 700; }
   border: 1px solid #ececec;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  padding: 1rem 1.1rem;
+  padding: 14px 1.1rem;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -415,40 +448,27 @@ strong, b { font-weight: 700; }
   height: 20px;
 }
 .grw__head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.5rem; }
-.grw__avatar { border-radius: 50%; width: 50px; height: 50px; object-fit: cover; }
+.grw__avatar { border-radius: 50%; width: 44px; height: 44px; object-fit: cover; }
 .grw__name {
   display: block;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 16px;
   color: var(--gblue);
 }
 /* Live widget stacks the time under the name. */
-.grw__time { display: block; font-size: 0.75rem; color: #999; }
+.grw__time { display: block; font-size: 13px; color: #999; }
 .grw__stars { margin-bottom: 0.4rem; font-size: 1.05rem; }
 .grw__text {
   margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 24px;
   color: #333;
-  /* Live widget shows ~4 lines per card. Full text stays in the DOM
-     (acceptance gate) and expands via read more. */
+  /* Live widget clips to ~5 lines per card (overflow hidden, the rest is
+     cut off exactly like the original). Full text stays in the DOM. */
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-.grw__card.is-open .grw__text {
-  display: block;
-  -webkit-line-clamp: unset;
-}
-.grw__more {
-  align-self: flex-start;
-  background: none;
-  border: 0;
-  padding: 0.3rem 0 0;
-  color: var(--gblue);
-  font-size: 0.85rem;
-  cursor: pointer;
 }
 .grw__arrow {
   position: absolute;
@@ -499,8 +519,9 @@ strong, b { font-weight: 700; }
   padding: 0 0 2.8125rem;
 }
 .loc-band h2 {
+  letter-spacing: -0.035em;
   color: #fff;
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: 51.44px;
   line-height: 1.1;
   margin: 64px 0 10px;
 }
@@ -516,7 +537,7 @@ strong, b { font-weight: 700; }
 /* Live info rhythm, derived from measured column heights: headings carry
    no bottom margin, paragraphs 22.5px except the last in each column;
    the empty lead paragraph in Hours contributes its margin only. */
-.loc-info h2 { font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1.2; margin: 0; }
+.loc-info h2 { font-size: 51.44px; line-height: 1.2; letter-spacing: -0.035em; margin: 0; }
 .loc-info p { color: var(--ink); line-height: 1.4; margin: 0 0 22.5px; }
 .loc-info p:last-child { margin-bottom: 0; }
 .loc-info p:empty { height: 0; }
@@ -548,11 +569,319 @@ strong, b { font-weight: 700; }
   margin: 2rem 0;
 }
 
-/* ---------- prose pages ---------- */
-.breadcrumb { font-size: 0.85rem; padding: 1.25rem 0 0; }
-.breadcrumb ol { display: flex; gap: 0.5rem; list-style: none; margin: 0; padding: 0; }
-.breadcrumb li + li::before { content: "/"; margin-right: 0.5rem; color: #b7b094; }
+/* ---------- inner page title band (measured: Bamboo cover, 72px EB Garamond
+   white, letter-spacing 5.9px, centered) ---------- */
+.page-band {
+  background: url("../assets/img/Bamboo.jpg") center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+.page-band__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  color: #fff;
+  font-size: 72px;
+  line-height: 72px;
+  letter-spacing: 5.9px;
+  text-transform: uppercase;
+  margin: 0;
+}
 
+/* ---------- inner page containers (measured: .x-container max width = 1161px
+   centered; .row-expanded rows = 1000px at the same center) ---------- */
+.wrap-max { width: 1161px; max-width: calc(100% - 2rem); margin-inline: auto; }
+.wrap-1000 { width: 1000px; max-width: calc(100% - 2rem); margin-inline: auto; }
+
+/* ---------- X-theme prose (measured: 18px / 30.6px, #7a6d4a, 23.6px between) ---------- */
+.x-text { font-size: 18px; line-height: 30.6px; color: var(--body); }
+.x-text p { margin: 0 0 23.6px; }
+.x-text p:last-child { margin-bottom: 0; }
+.x-text--ink { color: #000; }
+/* about-veronica's first text block hangs 45px left of the container. */
+.x-text--shift { margin-left: -45px; width: 1161px; }
+
+/* Section headings (measured .h-custom-headline sizes) */
+.x-h2 { font-family: var(--serif); font-weight: 400; color: var(--green); }
+.x-h3 { font-family: var(--serif); font-weight: 400; color: var(--green); }
+.x-h2 { font-size: 41.14px; line-height: 45.25px; letter-spacing: -0.035em; margin: 51.4px 0 8.2px; }
+.x-h3 { font-size: 30.86px; line-height: 33.9px; letter-spacing: -0.035em; margin: 54px 0 15.4px; }
+.x-h2--tight { margin: 0 0 8.2px; }
+
+/* Full-width hairline used between sections (measured: 1px rgba(0,0,0,.075),
+   23.6px above and below) */
+.x-hr { border: 0; border-top: 1px solid rgba(0, 0, 0, 0.075); height: 0; margin: 23.6px 0; }
+.x-hr--light { border-top-color: #d5d5d5; }
+
+/* ---------- two/three/four-column content rows (measured gutters: 40px) ---------- */
+.x-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.x-row--3 { grid-template-columns: repeat(3, 1fr); gap: 39.5px; }
+.x-row--herbs { grid-template-columns: 307px 1fr; gap: 40px; }
+.x-row--videos { grid-template-columns: 1fr 1fr; gap: 44px; }
+.x-row img { display: block; width: auto; max-width: 100%; height: auto; }
+.x-imgpad { padding-top: 45px; }
+.x-imgpad55 { padding-top: 55px; }
+.x-row--pad24 { padding-bottom: 24px; }
+.at-imgrow > div, .at-sec .x-row > div, .at-np .x-row > div { padding-bottom: 23.6px; }
+.x-row--fixed img { width: auto; }
+.x-video { padding: 15px; }
+.x-video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+
+/* Bulleted herb list, measured 18px / 30.6 with standard disc markers. */
+.x-list { margin: 0; padding-left: 1.3em; }
+.x-list li { font-size: 18px; line-height: 30.6px; color: var(--body); }
+
+/* ---------- scroll-fade entrance (live theme: columns fade + slide 45px over
+   750ms; preserved so the page feels the same) ---------- */
+.js .fx { opacity: 0; transform: translateY(45px); transition: opacity 0.75s ease, transform 0.75s ease; }
+.js .fx--l { transform: translateX(-45px); }
+.js .fx--r { transform: translateX(45px); }
+.js .fx.is-in { opacity: 1; transform: none; }
+
+/* ---------- white CTA callout card (measured 400/450px wide, 49.35px padding,
+   rgba(0,0,0,.075) tint, green serif head, brown copy, green button) ---------- */
+.x-callout {
+  background: #fff;
+  box-shadow: 0 0 0 16px rgba(0, 0, 0, 0.075);
+  padding: 49.35px;
+  text-align: center;
+  margin-inline: auto;
+}
+.x-callout--400 { width: 400px; max-width: calc(100% - 2rem); min-height: 400px; }
+.x-callout--at { margin-top: 27.6px; margin-bottom: 27.6px; }
+.x-callout--450 { width: 450px; max-width: calc(100% - 2rem); }
+.x-callout h2 {
+  letter-spacing: -0.035em;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 38.85px;
+  line-height: 42.7px;
+  color: var(--green);
+  margin: 0 0 14.2px;
+}
+.x-callout p { font-size: 21px; line-height: 29.4px; color: var(--body); margin: 0 0 27.6px; }
+.x-callout .x-btn { font-size: 21px; }
+
+/* Body-content button (measured .x-btn inside content: 21px, no radius) */
+.x-btn {
+  display: inline-block;
+  font-family: var(--sans);
+  border: 1px solid var(--green);
+  font-size: 21px;
+  line-height: 27.3px;
+  color: #fff;
+  background: var(--green);
+  border: 0;
+  border-radius: 0;
+  padding: 11.8px 23.6px 17.1px;
+  cursor: pointer;
+}
+.x-btn:hover { background: #5c8b3d; color: #fff; }
+.btn, .x-btn { text-shadow: 0 0.075em 0.075em rgba(0, 0, 0, 0.5); }
+.x-btn svg { width: 1em; height: 1em; margin-right: 0.45em; vertical-align: -0.12em; }
+
+/* ---------- CTA bands (Bamboo parallax, white callout on top) ---------- */
+.x-cta-band {
+  position: relative;
+  background: url("../assets/img/Bamboo.jpg") center center / cover no-repeat;
+  background-attachment: fixed;
+  padding: 65px 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ct-cta-band {
+  background: url("../assets/img/Bamboo.jpg") center center / cover no-repeat;
+  background-attachment: fixed;
+  padding: 65px 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- about-veronica ---------- */
+.av-portrait { display: block; width: 450px; max-width: 100%; margin: 0 auto 23.6px; }
+.av-photo { padding: 45px 0 45.8px; }
+.av-body { padding: 45px 0; }
+.av-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 46.4px; align-items: start; margin: 23.9px 0 19.4px; }
+.av-pair img { display: block; width: 100%; height: auto; }
+
+/* ---------- about-treatment section rhythm ---------- */
+.at-intro { padding: 15px 0 0; }
+.at-intro h2 { text-align: center; }
+.at-sec { padding: 35px 0 25px; }
+.at-sec--center { padding: 0 0 45px; }
+.at-sec--center { text-align: center; }
+.at-sec--center h3 { margin: 54px 0 15.4px; }
+.at-sec--center .x-text { max-width: 1000px; margin-inline: auto; text-align: center; }
+.at-imgrow { padding: 0; }
+.at-imgrow--last { padding: 0 0 35px; }
+.at-np { padding: 65px 0 65px; }
+.at-sec--massage { padding-top: 15px; }
+/* Live tunes one headline 10px lower than the rest. */
+.x-h3--sub { margin-top: 64px; }
+.at-np h2 { text-align: center; }
+.at-hrspace { padding: 0; }
+.at-massage-text strong { font-weight: 700; }
+.at-np-text p strong { font-weight: 700; }
+
+/* ---------- conditions-treated ---------- */
+.ct-sec { padding: 65px 0 66px; }
+.ct-item h3 { text-align: left; font-size: 41.14px; line-height: 45.25px; margin: 51.4px 0 8.2px; }
+/* Live site hand-tunes the right column so its rules sit level with the left. */
+.ct-item--gastro h3 { margin-top: 112px; }
+.ct-item--gastro p { margin-bottom: 80px; }
+.ct-item .x-hr { margin: 23.6px 0; }
+.ct-item p { font-size: 18px; line-height: 30.6px; color: var(--body); margin: 0; }
+
+/* Invisible 100px spacer the live grid keeps at the foot of its left column. */
+.x-gap { border: 0; border-top: 1px solid transparent; height: 0; margin: 100px 0 0; }
+
+/* ---------- contact ---------- */
+.cp-sec { padding: 65px 0 24px; text-align: center; }
+.cp-sec h2 { margin: 0; text-transform: uppercase; letter-spacing: -0.035em; }
+.cp-sec .x-text { text-align: center; }
+/* Live contact copy uses margin-free ("man") paragraphs throughout. */
+.cp-sec p, .cp-phone p { margin-bottom: 0; }
+.cp-sec .x-hr { margin: 23.6px 0; }
+.cp-phone { text-align: center; padding: 24px 0 25px; }
+.cp-phone h2 { margin: 0; text-transform: uppercase; letter-spacing: -0.035em; }
+.cp-map iframe { display: block; width: 100%; height: 450px; border: 0; }
+/* Live map keeps the inline-element baseline gap (450px iframe in a 459px
+   section); reproduce it as padding so the rhythm matches. */
+.cp-map { padding-bottom: 9px; }
+/* FAQ: white accordion boxes on the green band */
+.cp-faq { background: var(--green); padding: 65px 1rem; }
+.cp-faq h2 {
+  font-family: var(--serif);
+  font-size: 51.44px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 35px;
+}
+.cp-faq__list { width: 1000px; max-width: 100%; margin-inline: auto; }
+.cp-faq__item { margin-bottom: 4px; }
+.cp-faq__item:last-child { margin-bottom: 0; }
+.cp-faq__q {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  min-height: 59.4px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  text-align: left;
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 23.15px;
+  line-height: 1.3;
+  color: var(--green);
+  padding: 0 15px;
+  cursor: pointer;
+}
+.cp-faq__q .cp-faq__icon { flex: 0 0 auto; font-size: 0.9em; }
+.cp-faq__a { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+.cp-faq__item.is-open .cp-faq__a { max-height: 400px; }
+.cp-faq__a-inner { padding: 15px; font-size: 18px; line-height: 30.6px; color: #fff; }
+.cp-faq__a-inner p { margin: 0 0 23.6px; }
+.cp-faq__a-inner p:last-child { margin-bottom: 0; }
+.cp-faq__a-inner a { color: #fff; }
+/* Live FAQ answer link is bold white text, not a filled button. */
+.cp-faq__book { font-weight: 700; color: #fff !important; }
+
+/* ---------- office-policy ---------- */
+.op-sec { padding: 15px 0 45px; }
+.op-sec--first { padding-top: 45px; }
+.op-sec .x-text { padding-bottom: 23.6px; }
+.op-sec h2 { margin: 51.4px 0 8.2px; }
+.op-sec:first-child h2 { margin-top: 0; }
+
+/* ---------- privacy-policy ---------- */
+.pp { padding: 0 0 45px; }
+.pp h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 79.2px;
+  letter-spacing: 5.9px;
+  color: var(--green);
+  margin: 51px 0 14.4px;
+}
+.pp h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 51.44px;
+  line-height: 61.7px;
+  color: var(--green);
+  margin: 64.3px 0 10.3px;
+}
+.pp p { font-size: 18px; line-height: 30.6px; color: var(--body); margin: 0 0 23.6px; }
+.pp ul { margin: 0 0 23.6px; padding-left: 1.3em; }
+.pp li { font-size: 18px; line-height: 30.6px; color: var(--body); }
+.pp a { color: var(--green); text-decoration: underline; }
+
+/* ---------- news (blog archive: 1066px column + 300px sidebar) ----------
+   The live archive page confines header, article and footer to the left
+   1066px column; the search sidebar spans the full page height. */
+.news-layout {
+  display: grid;
+  grid-template-columns: 1066px 300px;
+  max-width: 1366px;
+  margin-inline: auto;
+}
+.news-col { min-width: 0; grid-column: 1; grid-row: 1; }
+.news-side {
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border-left: 1px solid #ececec;
+  padding: 15px 20px 45px;
+}
+.news-footcol { min-width: 0; grid-column: 1; grid-row: 2; }
+/* Narrow (906px) containers inside the news column, like the live page. */
+.wrap-news { width: 906px; max-width: calc(100% - 2rem); margin-inline: auto; }
+/* Live quirk: the archive navbar is 116px tall with the nav row sitting
+   56px below the navbar top. */
+.site-header--news { border-bottom: 1px solid #ececec; }
+.site-header--news .nav-phone { margin-right: 17px; }
+.site-header--news .navbar__inner { min-height: 116px; }
+.site-header--news .site-nav { margin-top: 56px; }
+.news-main { padding: 50px 0; border-bottom: 1px solid #ececec; }
+.news-main h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 56.53px;
+  line-height: 56.53px;
+  letter-spacing: 0.082em;
+  color: var(--green);
+  text-align: center;
+  margin: 0 0 32px;
+}
+.news-main .x-text { max-width: 853px; margin-inline: auto; }
+/* Footer inside the news column carries the archive divider rules. */
+.site-footer--news { border-top: 1px solid #ececec; }
+.site-footer--news .site-footer__widgets { padding-top: 44px; }
+.site-footer--news .site-footer__bottom { border-top: 1px solid #ececec; }
+.news-search { position: relative; }
+.news-search label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.news-search input {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid #ececec;
+  border-radius: 4px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+}
+.news-search input:focus { outline: 2px solid var(--green-soft); outline-offset: 1px; }
+
+/* ---------- legacy prose helpers still used on inner pages ---------- */
 .prose { padding: 1.5rem 0 4rem; }
 .prose h2 { font-size: clamp(2rem, 3.6vw, 3rem); margin-top: 2.2rem; }
 .prose h3 { font-size: 1.5rem; color: var(--orange); margin-top: 1.8rem; }
@@ -638,6 +967,7 @@ strong, b { font-weight: 700; }
 }
 .footer-widget { min-width: 0; }
 .footer-widget__title {
+  letter-spacing: -0.035em;
   color: var(--green);
   font-size: 1.5rem;
   margin-bottom: 1rem;
@@ -656,7 +986,7 @@ strong, b { font-weight: 700; }
   margin-top: 10px;
   font-size: 10px;
   line-height: 1.3;
-  letter-spacing: 0.15em;
+  letter-spacing: 2px;
   text-transform: uppercase;
   text-align: center;
   color: var(--body);
@@ -669,7 +999,8 @@ strong, b { font-weight: 700; }
 /* Footer menu is a footer-direct sibling (like the live menu-primary-2).
    The ul carries no strut (font-size:0 kills anonymous-whitespace lines):
    17px above the 13px links, 11px below. */
-.footer-menu { text-align: center; text-transform: uppercase; letter-spacing: 0.15em; }
+.footer-menu { text-align: center; text-transform: uppercase; }
+.footer-menu a { letter-spacing: 2px; }
 .footer-menu ul {
   display: flex;
   flex-wrap: wrap;
@@ -685,19 +1016,62 @@ strong, b { font-weight: 700; }
 .footer-menu a { font-size: 10px; line-height: 13px; color: var(--green-soft); }
 .footer-menu a:hover { color: var(--nav-hover); }
 
-/* ---------- responsive ---------- */
+/* ---------- responsive ----------
+   NOTE: the live X theme roots at 14px; this rebuild roots at the 16px
+   browser default with all values tuned to the same rendered pixels, so
+   rem/em sizes below are only converted where the live width is known. */
 @media (max-width: 979px) {
+  /* Live containers stay 85% wide on mobile (331.5px at a 390px viewport). */
+  .wrap, .wrap-max, .wrap-1000, .wrap-news { width: 85%; max-width: none; }
   .cta-row__grid { grid-template-columns: 1fr; gap: 2rem; }
   .site-footer__widgets { grid-template-columns: 1fr; }
-  .grw { grid-template-columns: 1fr; }
+  .grw { grid-template-columns: 76px 1fr; column-gap: 0.5rem; }
+  .reviews__label { grid-column: 1; max-width: none; }
+  .grw__track { grid-column: 2; }
+  .grw__summary { display: none; }
   .loc-info__grid { grid-template-columns: 1fr; }
+  /* inner pages: content rows stack, keeping the desktop type sizes */
+  .x-row, .x-row--3, .x-row--herbs, .x-row--videos, .av-pair { grid-template-columns: 1fr; gap: 2rem; }
+  .x-row--fixed img { width: 100%; }
+  .news-layout { grid-template-columns: 1fr; max-width: none; }
+  .news-col, .news-footcol, .news-side { grid-column: auto; grid-row: auto; }
+  .news-side { grid-row: auto; border-left: 0; border-top: 1px solid #ececec; padding: 15px 1rem; order: 2; }
+  .news-footcol { order: 3; }
+  .news-main { padding: 50px 1rem; }
+  .site-header--news .navbar__inner { min-height: 0; }
+  .site-header--news .site-nav { margin-top: 0; }
+  .site-header--news .nav-phone { margin-right: 0; }
+  .x-callout { padding: 37.6px; }
+  .x-callout h2 { font-size: 33.3px; }
+  .x-callout p { font-size: 18px; }
+  .x-callout .x-btn { font-size: 18px; }
+  .x-cta-band { background-attachment: scroll; padding: 45px 1rem; }
+  .cp-faq__list { width: 100%; }
+  .cp-faq__q { font-size: 19px; }
+  .x-text--shift { margin-left: 0; }
+}
+
+@media (max-width: 767px) {
+  .x-callout { padding: 37.6px; }
+  .x-callout h2 { font-size: 29.6px; }
+  .x-callout p, .x-callout .x-btn { font-size: 16px; }
+  .news-main h1 { font-size: 36.008px; line-height: 1.2; }
+  .cp-faq__q { font-size: 18px; }
+}
+
+@media (max-width: 479px) {
+  .news-main h1 { font-size: 28.0862px; }
 }
 
 @media (max-width: 860px) {
-  .brand { position: static; }
+  .brand { position: absolute; top: -76px; left: 0; }
   .brand img {
-    width: 170px;
+    width: 140px;
+    height: auto;
   }
+  .nav-phone a:first-child { display: none; }
+  .nav-phone { margin-right: 0; }
+  .nav-toggle { margin-left: auto; }
   .nav-toggle { display: flex; }
   .navbar__inner { align-items: center; flex-wrap: wrap; }
   .site-nav {
