@@ -525,9 +525,9 @@ strong, b { font-weight: 700; }
   border-radius: 50%;
   border: 0;
   padding: 0;
-  /* horizontal: keeps the live dot centers 16.2px apart; vertical: keeps
-     the row 9px tall so page height is unchanged */
-  margin: -7.5px;
+  /* vertical negative margin keeps the row 9px tall (page height unchanged);
+     none horizontally so the 24px targets never overlap (WCAG 2.5.8) */
+  margin: -7.5px 0;
   background-color: transparent;
   background-image: radial-gradient(circle at center, #d5d5d5 4.5px, transparent 4.6px);
   background-repeat: no-repeat;
@@ -1061,8 +1061,8 @@ strong, b { font-weight: 700; }
    inline-block with 5px padding, cancelled by matching negative margins. */
 .footer-menu a {
   display: inline-block;
-  padding: 5px 0.25rem;
-  margin: -5px -0.25rem;
+  padding: 6px 0.25rem;
+  margin: -6px -0.25rem;
 }
 .footer-menu a:hover { color: var(--nav-hover); }
 
