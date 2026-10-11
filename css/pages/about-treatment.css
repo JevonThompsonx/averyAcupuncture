@@ -1,0 +1,137 @@
+/* ==========================================================================
+   about-treatment.html — mobile overrides (page-owned, MOBILE-RULES M7)
+
+   Scope: every rule lives in a max-width media query, so the desktop
+   rendering (>= 861px) is untouched — M5 desktop parity is a hard gate.
+   Only page-owned classes are retuned (.at-* blocks, plus the .x-* helpers
+   this page uses: .x-video, .x-imgpad, .x-imgpad55, .x-list, .x-callout/.x-btn
+   inside the CTA band, in-text links). Shared chrome (header, nav, footer,
+   .page-band) is never touched here — a page stylesheet only loads on its
+   own page anyway.
+
+   Breakpoints: 860px = stacked phone/small-tablet layout (matches the shared
+   stacking breakpoint in style.css), 640px = phones where the desktop
+   heading scale stops fitting a narrow column, 479px = small phones.
+   ========================================================================== */
+
+@media (max-width: 860px) {
+
+  /* --- iOS Safari: `background-attachment: fixed` is ignored (and can render
+         blank or jitter) on iOS. Scroll the bamboo band below 861px; the
+         desktop parallax above 861px is unchanged. --- */
+  .x-cta-band {
+    background-attachment: scroll;
+    padding: 32px 1rem;
+  }
+
+  /* --- Section rhythm: these paddings/margins were measured on wide columns
+         and read as dead space once the rows stack. --- */
+  .at-intro { padding: 10px 0 0; }
+  .at-sec { padding: 24px 0 14px; }
+  .at-sec--center { padding: 0 0 26px; }
+  .at-sec--massage { padding-top: 8px; }
+  .at-np { padding: 34px 0 30px; }
+  .at-hrspace { padding: 0; }
+
+  .at-intro .x-hr,
+  .at-sec .x-hr,
+  .at-np .x-hr { margin: 16px 0; }
+
+  /* --- Stacked rows: the shared 2rem gap plus 23.6px of trailing padding per
+         row adds up to ~76px between a heading and the image that belongs to
+         it. Tighten to 20px/16px; still clearly separated, no longer cavernous. --- */
+  .at-sec .x-row,
+  .at-imgrow .x-row,
+  .at-np .x-row { gap: 1.25rem; }
+  .at-imgrow > div,
+  .at-sec .x-row > div,
+  .at-np .x-row > div { padding-bottom: 1rem; }
+
+  /* --- Desktop optical offsets: .x-imgpad (45px) / .x-imgpad55 (55px) aligned
+         an image with a taller text column. Stacked, they are just dead space;
+         scaled to ~half so the pairing still reads. --- */
+  .x-imgpad { padding-top: 22px; }
+  .x-imgpad55 { padding-top: 28px; }
+
+  /* --- Videos: 15px padding around each iframe cost 30px of width on a 320px
+         phone (242px of video inside a 272px column). Full-bleed the iframe;
+         the row's own spacing provides the rhythm. aspect-ratio is kept so
+         the box never depends on the lazy-loaded YouTube document. --- */
+  .x-video { padding: 0; }
+  .x-video iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; }
+
+  /* --- CTA callout: min-height: 400px forced ~80px of empty card at 320px,
+         and the 16px shadow ring left no margin. --- */
+  .x-callout {
+    padding: 26px 20px;
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.075);
+  }
+  .x-callout--at { min-height: 0; margin-top: 18px; margin-bottom: 18px; }
+  .x-callout h2 { font-size: 27px; line-height: 1.22; margin-bottom: 10px; }
+  .x-callout p { font-size: 17px; line-height: 1.6; margin-bottom: 20px; }
+  /* higher specificity than the shared `.x-callout .x-btn` (16px) so the
+     primary action stays legible; 12/22/14px padding gives a >= 44px target */
+  .x-callout .x-btn {
+    font-size: 18px;
+    line-height: 1.4;
+    padding: 12px 22px 14px;
+  }
+
+  /* --- In-text links (the auto-linked (805) 400-9723 tap-to-call) measure
+         121x24 at 390px. M2 wants >= 44x44 without moving a pixel: same
+         invisible-expansion pattern as .footer-menu a in style.css — the
+         padding grows the hit area, the matching negative margin keeps the
+         line box (and therefore the rendered pixels) exactly as measured. --- */
+  .at-intro .x-text a,
+  .at-sec .x-text a,
+  .at-imgrow .x-text a,
+  .at-np .x-text a,
+  .x-callout p a {
+    display: inline-block;
+    padding: 8px 6px;
+    margin: -8px -6px;
+  }
+
+  /* --- Body copy / herb list: keep the 18px/30.6px readability for the
+         practice's older audience, but let any long token wrap instead of
+         widening the column (M3 safety net; break-word does not affect
+         min-content sizing, so nothing else reflows). --- */
+  .x-text, .x-list, .x-callout p { overflow-wrap: break-word; }
+  .x-list { padding-left: 1.1em; }
+  .x-list li { font-size: 17px; line-height: 28.9px; }
+}
+
+/* Phones: the desktop heading scale stops fitting a ~272px column
+   ("Expert Acupuncture Care with Veronica Avery" wrapped to 4 lines at
+   41.14px with 45px line-height). Scale down, keeping a clear hierarchy over
+   the 18px body copy. Tablets (641-860px) keep the desktop type sizes. */
+@media (max-width: 640px) {
+  .at-intro .x-h2,
+  .at-np .x-h2 {
+    font-size: clamp(25px, 7.2vw, 33px);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    margin: 22px 0 8px;
+  }
+  .at-sec .x-h3,
+  .at-np .x-h3,
+  .at-imgrow .x-h3 {
+    font-size: clamp(21px, 5.9vw, 26px);
+    line-height: 1.24;
+    letter-spacing: -0.02em;
+    margin: 26px 0 12px;
+  }
+  /* the first heading of a centred block needs no extra air above it */
+  .at-sec--center .x-h3:first-child { margin-top: 12px; }
+  /* "Subsequent Visits" carries a 64px desktop nudge — meaningless stacked */
+  .x-h3--sub { margin-top: 26px; }
+}
+
+/* Small phones (320px): shave the card padding and tighten the galleries. */
+@media (max-width: 479px) {
+  .x-callout { padding: 22px 16px; }
+  .x-callout h2 { font-size: 25px; }
+  .at-sec .x-row,
+  .at-imgrow .x-row,
+  .at-np .x-row { gap: 1rem; }
+}
