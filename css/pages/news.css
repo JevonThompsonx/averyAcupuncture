@@ -1,0 +1,56 @@
+/* ==========================================================================
+   news.html — page-scoped rules (loaded after css/style.min.css)
+   --------------------------------------------------------------------------
+   PROBLEM.  The shared sheet gives the archive a fixed two-column grid
+   (1066px content + 300px sidebar) that only collapses to one column at
+   860px, so every viewport between 980px and 1365px overflows horizontally
+   (measured: +342px at 1024px, +86px at 1280px, +386px at 980px).
+
+   FIX.  Both tracks are made fluid in that band, keeping the desktop
+   rendering untouched:
+
+     vw ≤ 979    stacked (shared rule, untouched)
+     980–1266    content = vw - 200px,  sidebar fixed 200px
+     vw ≥ 1267   content fixed 1066px, sidebar = vw - 1066px  (capped at
+                 300px by .news-layout's max-width:1366px, so ≥1366px is
+                 the shared rule verbatim: 1066px + 300px)
+
+   The two ranges meet at 1266px (content column = 1066px on both sides), so
+   the layout scales continuously with no jump while resizing.  The second
+   range has no upper bound on purpose: with a classic (non-overlay)
+   scrollbar the layout viewport is up to ~15px narrower than the media
+   query width, so bounding it at 1365px would let a 1366px window overflow
+   by that scrollbar width.  minmax(0, …) on the sidebar track lets the
+   track — and the 100%-width search input inside it — shrink below the
+   input's ~200px intrinsic width instead of forcing an overflow.
+   ========================================================================== */
+
+/* 980–1266px: the reading column takes the slack, the sidebar pins at 200px. */
+@media (min-width: 980px) and (max-width: 1266px) {
+  .news-layout {
+    grid-template-columns: minmax(0, 1fr) 200px;
+  }
+}
+
+/* 1267px and up: keep the 1066px reading column, shrink the search rail. */
+@media (min-width: 1267px) {
+  .news-layout {
+    grid-template-columns: 1066px minmax(0, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small screens (≤979px, where the shared sheet stacks the grid).
+   The search box is the page's only control: give it a 16px font (stops
+   iOS Safari zooming in on focus) and a 50px-tall target, comfortably
+   past the 24px WCAG 2.5.8 bar.
+   -------------------------------------------------------------------------- */
+@media (max-width: 979px) {
+  .news-side { padding: 15px 1rem 25px; }
+  .news-search input {
+    font-size: 16px;
+    padding: 12px 12px 12px 38px;
+    background-position: 12px center;
+    background-size: 18px 18px;
+  }
+}
