@@ -44,9 +44,9 @@ def variants_for(nat_w):
 
 def encode(im, path, fmt):
     if fmt == "webp":
-        im.save(path, "WEBP", quality=80, method=6)
+        im.save(path, "WEBP", quality=76, method=6)
     elif fmt == "avif":
-        im.save(path, "AVIF", quality=52)
+        im.save(path, "AVIF", quality=46)
     elif fmt == "jpg":
         im.save(path, "JPEG", quality=82, optimize=True, progressive=True)
 

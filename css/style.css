@@ -11,6 +11,9 @@
 :root {
   --green: #6b9d47;
   --green-soft: #8abe3c;
+  /* AA-compliant ink variant of the brand green for text on white
+     (4.82:1 — the lighter shades fail WCAG at any size). */
+  --green-ink: #557d2f;
   --nav-hover: #8e8761;
   --orange: #e17d4a;
   --body: #7a6d4a;
@@ -144,7 +147,10 @@ strong, b { font-weight: 700; }
 .nav-phone a:first-child {
   font-family: var(--serif);
   font-size: 1.0625rem;
-  color: var(--green-soft);
+  /* Darkened from the live site's #8abe3c (2.21:1 on white) to the
+     same-hue #557d2f (4.82:1) — the original shade is unreadable for the
+     site's older audience. ADA call, one token, documented in README. */
+  color: var(--green-ink);
 }
 .nav-book-online {
   display: inline-block;
@@ -207,7 +213,7 @@ strong, b { font-weight: 700; }
   font-size: 0.875rem;
   letter-spacing: 0.105em;
   text-transform: uppercase;
-  color: var(--green-soft);
+  color: var(--green-ink);
 }
 .site-nav a:hover, .site-nav a[aria-current] {
   color: var(--nav-hover);
@@ -502,7 +508,11 @@ strong, b { font-weight: 700; }
 .grw__next { right: -12px; }
 .grw__arrow:hover { background: #f5f5f5; }
 
-/* Slider dots, like the live widget (orange active, gray rest). */
+/* Slider dots, like the live widget (orange active, gray rest).
+   24px hit targets (WCAG 2.5.8): the button is transparent and the 9px
+   dot is painted by a centered radial-gradient, so the rendering is
+   pixel-identical while the clickable area is 24px. Negative margins
+   keep the dot centers at the live widget's spacing. */
 .grw__dots {
   display: flex;
   justify-content: center;
@@ -510,23 +520,21 @@ strong, b { font-weight: 700; }
   margin-top: 7px;
 }
 .grw__dot {
-  width: 9px;
-  height: 9px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 0;
   padding: 0;
-  background: #d5d5d5;
+  /* horizontal: keeps the live dot centers 16.2px apart; vertical: keeps
+     the row 9px tall so page height is unchanged */
+  margin: -7.5px;
+  background-color: transparent;
+  background-image: radial-gradient(circle at center, #d5d5d5 4.5px, transparent 4.6px);
+  background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
-  /* Invisible 25px hit area (WCAG target-size / Lighthouse target-size) —
-     the rendered dot stays 9px, only the clickable area grows. */
-  position: relative;
 }
-.grw__dot::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-}
-.grw__dot.is-active { background: var(--gstar); }
+.grw__dot.is-active { background-image: radial-gradient(circle at center, var(--gstar) 4.5px, transparent 4.6px); }
 
 /* ---------- green location band ---------- */
 /* Live: NO top padding, 45px bottom. The 64px above the heading is the
@@ -1025,7 +1033,7 @@ strong, b { font-weight: 700; }
 .site-footer__bottom p { margin: 0 0 13.13px; }
 /* Links inside a text block must be distinguishable by more than color
    (WCAG 1.4.1 / Lighthouse link-in-text-block). */
-.site-footer__bottom a { text-decoration: underline; }
+.site-footer__bottom a { text-decoration: underline; color: var(--green-ink); }
 /* Wellness.com footer links: the live site had them at #d5d5d5 on white
    (1.6:1 — invisible to many older eyes). Darkened to meet 4.5:1 while
    keeping the muted look. */
@@ -1036,10 +1044,6 @@ strong, b { font-weight: 700; }
    17px above the 13px links, 11px below. */
 .footer-menu { text-align: center; text-transform: uppercase; }
 .footer-menu a { letter-spacing: 2px; }
-/* Invisible hit-area expansion for the 14px footer links (same 24px+
-   target requirement as the slider dots; rendering unchanged). */
-.footer-menu a { position: relative; }
-.footer-menu a::after { content: ""; position: absolute; left: -0.5rem; right: -0.5rem; top: -0.65rem; bottom: -0.65rem; }
 .footer-menu ul {
   display: flex;
   flex-wrap: wrap;
@@ -1052,7 +1056,14 @@ strong, b { font-weight: 700; }
   padding: 0;
 }
 .footer-menu li { font-size: 10px; line-height: 13px; }
-.footer-menu a { font-size: 10px; line-height: 13px; color: var(--green-soft); }
+.footer-menu a { font-size: 10px; line-height: 13px; color: var(--green-ink); }
+/* 24px minimum touch target without moving any pixels: the <a> becomes an
+   inline-block with 5px padding, cancelled by matching negative margins. */
+.footer-menu a {
+  display: inline-block;
+  padding: 5px 0.25rem;
+  margin: -5px -0.25rem;
+}
 .footer-menu a:hover { color: var(--nav-hover); }
 
 /* ---------- responsive ----------

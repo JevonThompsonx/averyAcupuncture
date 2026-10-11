@@ -278,6 +278,28 @@ def minify_css():
         f.write(out.strip())
     print(f"wrote css/style.min.css ({len(out):,} bytes from {len(text):,})")
 
+def font_preloads():
+    """Preload the two most-used latin faces so text renders in the right
+    face immediately (fonts are self-hosted since the Lighthouse pass —
+    see build_fonts.py)."""
+    css_path = os.path.join(ROOT, "css", "fonts.css")
+    if not os.path.exists(css_path):
+        return ""
+    css = open(css_path, encoding="utf-8").read()
+    latin = "U+0000-00FF"
+    picks = []
+    for fam, weight in (("Open Sans", "400"), ("EB Garamond", "400")):
+        m = re.search(
+            r"@font-face\s*{[^}]*font-family:\s*'" + re.escape(fam) + r"'[^}]*"
+            r"font-style:\s*normal[^}]*font-weight:\s*" + weight + r"[^}]*"
+            r"url\((\.\./assets/fonts/[^)]+\.woff2)\)[^}]*" + re.escape(latin),
+            css)
+        if m:
+            picks.append(m.group(1).replace("../", ""))
+    return "\n".join(
+        f'<link rel="preload" href="{p}" as="font" type="font/woff2" crossorigin>' for p in picks)
+
+
 def page(name, active, body, description):
     fname = name + ".html"
     return f"""<!DOCTYPE html>
@@ -297,13 +319,12 @@ def page(name, active, body, description):
 <meta property="og:image" content="{SITE_URL}/assets/img/Bamboo.jpg">
 <meta property="og:site_name" content="Avery Acupuncture">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://www.youtube.com">
 <link rel="dns-prefetch" href="https://www.facebook.com">
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="dns-prefetch" href="https://www.wellness.com">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,700&family=Pathway+Gothic+One&display=swap&display=swap" rel="stylesheet">
+{font_preloads}
+<link rel="stylesheet" href="{asset_ver('css/fonts.css')}">
 {JSONLD}
 <link rel="stylesheet" href="{asset_ver('css/style.min.css')}">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
