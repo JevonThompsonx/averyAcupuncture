@@ -1065,8 +1065,8 @@ strong, b { font-weight: 700; }
 /* Links inside a text block must be distinguishable by more than color
    (WCAG 1.4.1 / Lighthouse link-in-text-block). */
 .site-footer__bottom a { text-decoration: underline; color: var(--green-ink); }
-/* Colophon credit link: 14px -> 24px hit area, rendering unchanged. */
-.site-footer__bottom a { display: inline-block; padding: 5px 3px; margin: -5px -3px; }
+/* Colophon credit link: 14px -> 25px hit area, rendering unchanged. */
+.site-footer__bottom a { display: inline-block; padding: 6px 3px; margin: -6px -3px; }
 /* Wellness.com footer links: the live site had them at #d5d5d5 on white
    (1.6:1 — invisible to many older eyes). Darkened to meet 4.5:1 while
    keeping the muted look. */
