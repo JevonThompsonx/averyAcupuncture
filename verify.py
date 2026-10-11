@@ -251,6 +251,10 @@ for p, soup in soups.items():
 hero_imgs = [i for i in soups["index.html"].find_all("img") if i.get("fetchpriority") == "high"]
 check(len(hero_imgs) == 1, "index.html: hero image is eager with fetchpriority=high")
 check(len(soups["index.html"].find_all("picture")) > 0, "index.html: responsive <picture> markup present")
+for p, soup in soups.items():
+    head = str(soup)
+    check(head.count('as="font"') == 2, f"{p}: two font preloads present")
+    check("<function " not in head, f"{p}: no template artifacts in output")
 
 print("\n" + "=" * 60)
 if fails:

@@ -323,7 +323,7 @@ def page(name, active, body, description):
 <link rel="dns-prefetch" href="https://www.facebook.com">
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="dns-prefetch" href="https://www.wellness.com">
-{font_preloads}
+{font_preloads()}
 <link rel="stylesheet" href="{asset_ver('css/fonts.css')}">
 {JSONLD}
 <link rel="stylesheet" href="{asset_ver('css/style.min.css')}">
