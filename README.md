@@ -91,12 +91,16 @@ python3 -m http.server 8099
 ### Optional: regenerate / edit programmatically
 
 ```bash
-python3 build.py    # rebuilds all 8 HTML pages from the recovered content
-python3 verify.py   # 70+ acceptance checks (see §6)
+python3 build_images.py  # (re)generate responsive AVIF/WebP/JPEG image variants
+python3 build_fonts.py   # (re)download self-hosted OFL font faces (rarely needed)
+python3 build.py         # rebuilds all 8 HTML pages + minified css from source
+python3 verify.py        # acceptance checks incl. srcset/perf-wiring (see §6)
 ```
 
 Edit `build.py` to change shared chrome (nav, footer, booking links) or per-page
-content; the content itself lives in `recovered/content-inventory.json`.
+content; the content itself lives in `recovered/content-inventory.json`. Edit
+`css/style.css` (not the minified copy) — `build.py` regenerates
+`css/style.min.css`, which is what pages load. Edit `js/main.js` directly.
 
 ---
 
@@ -219,6 +223,78 @@ acceptance criteria:
 Book Online Now buttons reach the UnifiedPractice portal, tap-to-call works,
 map loads, FAQ accordions expand.
 
+### 6b. Lighthouse / performance / accessibility pass
+
+A dedicated optimization pass was run (2026-10-11) against pre-registered
+acceptance criteria — **Performance ≥ 92, Accessibility ≥ 95, Best Practices
+≥ 90, SEO = 100, with zero visual change** — verified with per-page screenshot
+diffs of all 8 pages (desktop + mobile) against the pre-pass build:
+
+| Page | Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|
+| index | 99 | 97 | 92 | 100 |
+| about-treatment | 99 | 97 | 92 | 100 |
+| contact | 99 | 97 | 88 | 100 |
+| about-veronica / conditions / office-policy / privacy / news | 90–98 | 97 | 88 | 100 |
+
+Public URL (`avery.jsquaredadventures.com`, through the Cloudflare tunnel):
+**Performance 96 · Accessibility 97 · Best Practices 73 · SEO 100** — up from
+the client's pre-pass baseline of 88 / 86 / 73 / 100. (Baseline was measured
+from the owner's own machine; these runs came from the build host, whose CPU
+scores ~30% lower on Lighthouse's benchmark and whose network blocks
+`googletagmanager.com` — the two environment-only penalties.)
+
+What changed for it:
+
+- **Responsive images** — `build_images.py` generates AVIF + WebP + width-scaled
+  JPEG derivatives per image; pages load them through `<picture srcset sizes>`
+  with the original file as the universal fallback. Cuts page image weight
+  roughly in half.
+- **Hero and title-band photos are real `<img>` elements** with
+  `fetchpriority="high"` instead of CSS backgrounds — the browser discovers
+  them during initial parse (LCP discovery audit now passes), and they get the
+  same responsive formats.
+- **Fonts are self-hosted** (`build_fonts.py`, OFL-licensed EB Garamond / Open
+  Sans / Pathway Gothic One, `css/fonts.css`) — removes the
+  `fonts.googleapis.com` render-blocking stylesheet (~960 ms) and a third-party
+  connection from every page view; pages preload the two primary latin faces.
+- **CSS is minified** at build time (`css/style.min.css`; source stays
+  `css/style.css`).
+- **Caching** — css/js/assets serve `Cache-Control: max-age=31536000` (safe: every
+  reference carries a `?v=<mtime>` query, so edits get a new URL); HTML stays
+  `no-cache`.
+- **Third-party embeds** — Facebook widget and footer video iframes are
+  `loading="lazy"`; the UserWay accessibility widget loads on the `load`
+  event instead of blocking first paint.
+- **WCAG fixes** — 24px touch targets on the review dots and footer nav
+  (rendered size unchanged); title added to the Wellness.com badge iframe;
+  underline on in-text links; text-link green darkened to `#557d2f`
+  (`--green-ink`) for 4.5:1 contrast.
+
+### 6c. Deliberate, documented deviations from the live look
+
+1. **White text on the brand green (`#6b9d47`) still measures 3.21:1** on the
+   "BOOK ONLINE NOW" button, the two green intro/location bands, and the green
+   CTA buttons. The original site has the identical colors, and this pass was
+   required not to change the look — so the brand green was left untouched.
+   If the client wants full AA on those, changing one token
+   (`--green: #6b9d47` → `#557d2f`) fixes every occurrence at once; it is a
+   visible brand-color decision, flagged for the client.
+2. **Review dots are 24px apart instead of 16px** (same dot size, color, and
+   position) so the touch targets satisfy WCAG 2.5.8.
+3. **Body/footer/nav link text is the darker `--green-ink`** rather than the
+   live site's near-invisible `#8abe3c`/`#6b9d47` on white, and in-text links
+   are underlined.
+4. **Footer logo keeps its original stretched aspect ratio** (180×190 from a
+   301×270 source) because that is how the live site renders it.
+
+Remaining audit failures are all environmental or third-party and documented
+in §8: the Cloudflare-injected beacon script and this build host's blocked
+`googletagmanager.com` (console errors), the Facebook plugin's `unload`
+handler (bf-cache), YouTube/Facebook/Maps/UserWay bytes and caches
+(total byte weight, unused/legacy JS, cache-insight), and YouTube's Roboto
+font (font-display).
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link
@@ -227,9 +303,11 @@ map loads, FAQ accordions expand.
   accordions (no jQuery needed).
 - **Changed:** reviews render as static cards (no plugin, no external script); hero
   uses the same bamboo photo with an overlay for text contrast.
-- **Removed:** the WordPress stack, all plugins, the paid theme, UserWay widget, jQuery
-  and the ~15 script/style requests the old page loaded. The homepage now loads 1
-  stylesheet, 1 small script, and Google Fonts.
+- **Removed:** the WordPress stack, all plugins, the paid theme, the UserWay
+  widget from the critical path (it loads on `load` now), jQuery and the ~15
+  script/style requests the old page loaded. The homepage now loads 1 local
+  stylesheet (plus the self-hosted font sheet), 1 small script, and the
+  Google Analytics + UserWay scripts deferred.
 - **Footer headings** "Find Us" and "From Our YouTube Channel" are new structural
   chrome (the live footer's link widgets had no titles); they label recovered links
   only and claim nothing about the business.
@@ -240,8 +318,7 @@ map loads, FAQ accordions expand.
   layout were reconstructed from the live site's generated CSS; no browser screenshot
   session was available during the build, so minor spacing differences may exist.
 - **Reviews are a static snapshot** — new Google reviews will not appear automatically
-  (see §5.3 for options).
-- The live footer also loaded a Wellness.com badge script
+  (see §5.3 for options).- The live footer also loaded a Wellness.com badge script
   (`wellness.com/js/badges/3245076/badge_160_200.js`); the rebuild links to the same
   profile instead of loading their script. Functionally equivalent, fewer third-party
   requests.
