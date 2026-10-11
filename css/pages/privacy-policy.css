@@ -1,0 +1,74 @@
+/* privacy-policy — mobile-only overrides.
+   Loaded only on privacy-policy.html, after style.min.css, so nothing here
+   can reach another page. Desktop (>= 861px) is deliberately untouched:
+   every rule lives inside one (max-width: 860px) block.
+
+   Measured before (Playwright, scrollWidth vs clientWidth):
+     320 +141px / 375 +90px / 390 +76px / 414 +54px  — all of it the <h1>:
+     ".pp-title" renders at 72px/5.9px letter-spacing, so its widest word
+     needs ~437px and cannot fit the 85%-wide mobile column (272px at 320).
+     No phone-width rule existed for .pp at all. */
+
+@media (max-width: 860px) {
+
+  /* ---- M1/M3: title that could not wrap at all ----------------------------------
+     Scale it with the viewport instead of a fixed 72px so the longest word
+     ("Privacy", ~438px at 72px) always fits the column. clamp() keeps a sane
+     floor/ceiling; letter-spacing goes to em so it scales with the type.
+     overflow-wrap: anywhere is a safety net — with the clamp below the title
+     never needs it, but a wider fallback face still cannot overflow. */
+  .pp .pp-title {
+    font-size: clamp(24px, 13.5vw, 46px);
+    line-height: 1.14;
+    letter-spacing: 0.02em;
+    margin: 0 0 0.45em;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  /* ---- M1/M3: section headings ---------------------------------------------------
+     51.44px headings are legible but the rhythm was built for a 1161px column
+     (64px above each h2). Scale both so headings stay clearly above the body
+     copy without eating the scroll on a phone. */
+  .pp h2 {
+    font-size: clamp(27px, 7vw, 40px);
+    line-height: 1.2;
+    margin: clamp(28px, 8.5vw, 46px) 0 0.5em;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  /* ---- M3: long unbreakable strings ---------------------------------------------
+     The legal boilerplate carries whole URLs ("https://averyacupuncture.com/",
+     partner links below 861px) that used to sit on their own unbreakable run
+     and forced a wider scroll area. anywhere (not break-word) so the intrinsic
+     min-content width shrinks too — that is what actually removes the overflow. */
+  .pp p,
+  .pp li,
+  .pp h1,
+  .pp h2,
+  .pp a {
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- mobile QUALITY: one wall of text -----------------------------------------
+     Desktop is 18px/30.6px, which is very large for a ~10,000px page of legal
+     copy on a phone. Line-height stays proportional to the desktop ratio
+     (30.6/18 = 1.7), so the measure scales as a block instead of only the
+     font-size shrinking. Paragraph gaps move to em for the same reason. */
+  .pp p,
+  .pp li {
+    font-size: clamp(15px, 4.15vw, 18px);
+    line-height: 1.7;
+  }
+  .pp p { margin: 0 0 1.3em; }
+
+  /* List/bullet indentation: em-based so it tracks the smaller type, with a
+     little air between items (desktop relied on 30.6px leading alone). */
+  .pp ul { margin: 0 0 1.3em; padding-left: 1.4em; }
+  .pp li { margin-bottom: 0.4em; }
+  .pp li:last-child { margin-bottom: 0; }
+
+  /* Tighten the page's trailing pad to match the smaller leading. */
+  .pp { padding-bottom: 32px; }
+}
