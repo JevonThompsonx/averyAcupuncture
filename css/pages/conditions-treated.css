@@ -1,0 +1,61 @@
+/* ==========================================================================
+   conditions-treated — mobile rhythm / typography
+
+   Scope: max-width 860px ONLY. Nothing here applies at >=861px, so the
+   1280px desktop-parity gate (M5) is untouched — the desktop page renders
+   byte-for-byte as before.
+
+   What the shared sheet already does on a phone (css/style.css):
+     * <=979px  .x-row stacks to one column (gap 2rem); the CTA callout
+                 drops to 37.6px padding with smaller h2/p/btn.
+     * <=767px/.x-callout shrinks a little more.
+   Those shared rules were measured for the desktop look; once the two
+   condition columns stack, several desktop-only alignment values turn into
+   big empty holes. This file fixes ONLY that, for this page.
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  /* Section padding was cut for the wide desktop columns; lighten it on a
+     phone so the list starts closer to the title band. */
+  .ct-sec { padding: 40px 0 44px; }
+
+  /* 41px headings dwarf a ~272px phone column. Scale to 30px (still larger
+     than the 18px body copy for the site's older readers) and tighten the
+     51px top margin an individual heading no longer needs when stacked. */
+  .ct-item h3 {
+    font-size: 30px;
+    line-height: 1.28;
+    margin: 24px 0 8px;
+  }
+  /* The first heading of each (now full-width) column needs no top gap —
+     the section padding already opens the block. */
+  .ct-item:first-child h3 { margin-top: 0; }
+  /* Slightly tighter rule-to-copy spacing than the desktop 23.6px. */
+  .ct-item .x-hr { margin: 14px 0; }
+
+  /* These two rules existed only to line the right column up with the left
+     on desktop. Stacked, they left a 112px hole above the GI heading and an
+     80px gap after it; reset them to the normal item rhythm. */
+  .ct-item--gastro h3 { margin-top: 24px; }
+  .ct-item--gastro p { margin-bottom: 0; }
+
+  /* Invisible 100px spacer the desktop grid kept at the foot of its left
+     column. Stacked, it is a 100px void between the Pediatrics and Mental
+     blocks. It is aria-hidden and transparent, so collapsing it to 0 is a
+     layout-only change (content/structure untouched). The 2rem .x-row gap
+     still marks the one-time column break. */
+  .ct-sec .x-gap { margin: 0; }
+
+  /* CTA band: a 16px ring around a 256px card reads as a thick frame on a
+     phone; trim it to 10px and lighten the padding. Scroll the bamboo
+     background (fixed backgrounds jank on phones, and sibling .x-cta-band
+     already switches to scroll at <=979px). */
+  .ct-cta-band {
+    background-attachment: scroll;
+    padding: 44px 1rem;
+  }
+  .ct-cta-band .x-callout {
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.075);
+    padding: 28px;
+  }
+}
