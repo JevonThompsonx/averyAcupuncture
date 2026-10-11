@@ -748,7 +748,7 @@ def page_contact():
     </div>
     <div class="fx fx--r">
       <h2 class="x-h2">Hours</h2>
-      <div class="x-text"><p><br><strong>Monday, Tuesday, Thursday:</strong> 8:30am-5:00pm<br></p><strong>Friday:</strong> 8:30-4:30</div>
+      <div class="x-text"><p><br><strong>Monday, Tuesday, Thursday:</strong> <span class="cp-hrs">8:30am-5:00pm</span><br></p><strong>Friday:</strong> <span class="cp-hrs">8:30-4:30</span></div>
     </div>
   </div>
   <div class="wrap-max">

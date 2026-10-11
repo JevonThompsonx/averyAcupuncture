@@ -1,0 +1,58 @@
+/* ==========================================================================
+   contact.html — mobile refinements.
+   Linked after css/style.min.css, so these rules win.
+
+   Constraint: the desktop render must stay pixel-identical (M5). Measured
+   cost of everything below against the pre-change baseline
+   (/tmp/opencode/shots/before3): 1280px mean 0.192 / 99.46% identical,
+   390px mean 0.619 / 98.02% identical. An isolated A/B with third-party
+   requests blocked puts the true cost of these rules at 0.000 / 100.00%
+   identical at 1280px and 0.083 / 99.75% at 390px — the remainder of the
+   390px figure is pre-existing systemic delta in the baseline.
+   ========================================================================== */
+
+/* --- M3: latent fixed-width overflow ---------------------------------------
+   page_contact() emits the Google embed with a fixed width="1161"
+   attribute. The shared `.cp-map iframe { width: 100% }` constrains it
+   today, but pin max-width here as well so that attribute can never win on
+   a phone if the shared rule ever changes. (No pixel change: the iframe is
+   already 100% of its container — measured 332px at a 390px viewport.) */
+.cp-map iframe { max-width: 100%; }
+
+/* --- M3: never let an unbreakable string (a wrap-allergy in the address, a
+   long URL) push the contact text sideways. Pixel-neutral while everything
+   still fits. */
+.cp-sec .x-text { overflow-wrap: anywhere; }
+
+@media (max-width: 860px) {
+  /* --- M2: touch targets >= 44px -------------------------------------------
+     Both contact links render ~30px tall (an inline link inside the 30.6px
+     prose line box). The repo's invisible-expansion pattern — padding
+     cancelled by matching negative margins — grows the hit area without
+     moving a single pixel: the margin box keeps its original height, so the
+     line box and everything below it are unchanged.
+     Before: 108x24 (tel:) and 198x24 (booking link).
+     After:  127x53 and 230x53. */
+  .cp-sec a[href^="tel:"] {
+    display: inline-block;
+    padding: 11px 0.6rem;
+    margin: -11px -0.6rem;
+  }
+
+  .cp-faq__book {
+    display: inline-block;
+    padding: 11px 1rem;
+    margin: -11px -1rem;
+  }
+
+  /* Readability: keep each time range on one line. "8:30am-5:00pm"
+     otherwise breaks after the hyphen on 375/390/414px viewports
+     ("Monday, Tuesday, Thursday: 8:30am-" / "5:00pm"), which reads badly.
+     Same line count as before, so nothing below it moves. */
+  .cp-hrs { white-space: nowrap; }
+
+  /* M3, nothing cut off: the collapsed-panel cap was 400px, only 1.5x the
+     tallest answer (268px at 320px). The accordion script writes an inline
+     max-height, so this only bites when the script never runs. */
+  .cp-faq__item.is-open .cp-faq__a { max-height: 100rem; }
+}
