@@ -83,7 +83,7 @@ YT_FOOT = "https://www.youtube.com/embed/YAffgKRg6P0"
 NAV = [
     ("Meet Veronica Avery", "about-veronica.html", []),
     ("Conditions Treated", "conditions-treated.html", []),
-    ("New Patients", "about-treatment.html#new-patients", [
+    ("New Patients", "about-treatment.html", [
         ("About Treatment", "about-treatment.html"),
         ("Office Policy", "office-policy.html"),
     ]),
