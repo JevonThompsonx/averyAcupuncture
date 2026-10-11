@@ -295,6 +295,40 @@ handler (bf-cache), YouTube/Facebook/Maps/UserWay bytes and caches
 (total byte weight, unused/legacy JS, cache-insight), and YouTube's Roboto
 font (font-display).
 
+### 6d. Mobile optimization pass (2026-10-11)
+
+The desktop rebuild had never been verified on phones and overflowed
+horizontally on four pages (up to +865px). The full protocol is in
+**[`MOBILE-RULES.md`](MOBILE-RULES.md)** — rules M1–M9, per-page ownership,
+and the verification commands. Summary of the result, measured with Playwright
+(`scrollWidth === clientWidth`, no scrolling, fresh load + after a scroll pass):
+
+| Page | 320 | 375 | 390 | 414 | 768 | 1024 | 1280 |
+|---|---|---|---|---|---|---|---|
+| index | **+55 → 0** | +4 → 0 | ok | ok | ok | ok | ok |
+| about-veronica | **+865 → 0** | +814 → 0 | +800 → 0 | +778 → 0 | +451 → 0 | +63 → 0 | ok |
+| conditions-treated | ok | ok | ok | ok | ok | ok | ok |
+| about-treatment | ok | ok | ok | ok | ok | ok | ok |
+| contact | ok | ok | ok | ok | ok | ok | ok |
+| office-policy | ok | ok | ok | ok | ok | ok | ok |
+| privacy-policy | **+141 → 0** | +90 → 0 | +76 → 0 | +54 → 0 | ok | ok | ok |
+| news | ok | ok | ok | ok | ok | **+342 → 0** | **+86 → 0** |
+
+All eight pages: **zero horizontal overflow at every width**, all interactive
+targets ≥ 24×24 px (WCAG 2.5.8), and desktop rendering unchanged — full-page
+1280px screenshot diffs vs the pre-pass baseline are 0.05–0.65 mean
+(97–99.9% identical).
+
+Structure: each page owns its responsive rules in `css/pages/<page>.css`
+(auto-linked by `build.py`, loads after `style.min.css`, so page rules never
+leak to other pages), while shared chrome (header/footer/nav, band titles,
+entrance animations) was fixed once in `css/style.css`. Shared fixes included:
+the `.fx` entrance animation no longer slides horizontally below 1200px
+(transient phone/tablet scroll jitter), the page-band title scales via
+`clamp()`, and the hamburger/mobile-menu/footer touch targets meet the 24px
+bar. iOS Safari's `background-attachment: fixed` bug is neutralized below
+979px on the bamboo CTA bands.
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link
