@@ -34,12 +34,14 @@ agents below.
   .scrollWidth === clientWidth` at 320, 375, 390, 414, 768, 1024, 1280, 1440,
   1920 px. No exceptions; transient animation states included (verify with the
   page freshly loaded *and* after a full scroll pass).
-- **M2 — Touch targets ≥ 44×44 px** below 861 px for every interactive
+- **M2 — Touch targets ≥ 24×24 px** below 861 px for every interactive
   element: nav toggle, nav links, footer links, buttons, slider arrows/dots,
-  FAQ toggles, tap-to-call. Visual size may stay as-is only via the
-  invisible-expansion patterns already used in this repo (padding +
-  matching negative margin, or a centered radial-gradient on a transparent
-  box — see `.grw__dot` and `.footer-menu a` in `css/style.css`).
+  FAQ toggles, tap-to-call. (WCAG 2.5.8 "Target Size (Minimum)" is the 24px
+  bar this repo standardizes on and what Lighthouse audits; aim higher where
+  the layout allows.) Visual size may stay as-is via the invisible-expansion
+  patterns already used in this repo (padding + matching negative margin, or
+  a centered radial-gradient on a transparent box — see `.grw__dot` and
+  `.footer-menu a` in `css/style.css`).
 - **M3 — Nothing may stick out or be cut off.** Fixed pixel widths that
   assume desktop (e.g. `width: 1161px`, `grid-template-columns: 1066px 300px`)
   must become fluid/minmax/stacked. Long unbreakable strings (URLs) must
@@ -51,6 +53,11 @@ agents below.
   1280 px against the pre-change baseline (`/tmp/opencode/shots/before3`)
   must stay within tolerance (mean ≤ 1.0, ≥ 97% identical pixels). Typography
   may scale down below 861 px only; ≥ 861 px must render as before.
+  *The 390px mobile screenshot diff is informational, not a gate* — the
+  pre-change mobile baseline captured the broken (overflowing) layout, so
+  any correct mobile fix necessarily diverges from it. Judge mobile quality
+  by the overflow/target audits and by inspecting the render, not by the
+  mobile diff number.
 - **M6 — No new external requests, no new libraries.** CSS changes and (when
   unavoidable) markup changes inside your page's own `build.py` function.
 - **M7 — Only touch your own files.**

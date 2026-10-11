@@ -753,6 +753,11 @@ strong, b { font-weight: 700; }
   align-items: center;
   justify-content: center;
 }
+/* iOS Safari ignores `fixed` backgrounds (blank/jittery band on iPhones) —
+   same ≤979px escape hatch the .x-cta-band sibling already has. */
+@media (max-width: 979px) {
+  .ct-cta-band { background-attachment: scroll; }
+}
 @supports (background-image: image-set(url("../assets/img/Bamboo-1200w.webp") type("image/webp"))) {
   .x-cta-band, .ct-cta-band { background-image: url("../assets/img/Bamboo-1200w.webp"); }
 }
@@ -1033,6 +1038,11 @@ strong, b { font-weight: 700; }
 .wellness-badge p { text-align: center; margin-top: 1rem; }
 .wellness-badge img { margin-inline: auto; }
 .footer-widget__video iframe { width: 100%; height: 315px; border: 0; }
+/* On phones a fixed 315px box letterboxes the 16:9 player (wasted ~160px).
+   Mobile only — desktop rendering is untouched. */
+@media (max-width: 860px) {
+  .footer-widget__video iframe { height: auto; aspect-ratio: 16 / 9; }
+}
 
 .site-footer__bottom {
   /* Measured live colophon bottom: 10px/13px uppercase, 54.625px top
@@ -1055,11 +1065,17 @@ strong, b { font-weight: 700; }
 /* Links inside a text block must be distinguishable by more than color
    (WCAG 1.4.1 / Lighthouse link-in-text-block). */
 .site-footer__bottom a { text-decoration: underline; color: var(--green-ink); }
+/* Colophon credit link: 14px -> 24px hit area, rendering unchanged. */
+.site-footer__bottom a { display: inline-block; padding: 5px 3px; margin: -5px -3px; }
 /* Wellness.com footer links: the live site had them at #d5d5d5 on white
    (1.6:1 — invisible to many older eyes). Darkened to meet 4.5:1 while
    keeping the muted look. */
 .wellness-link { color: #6f6f6f; }
 .wellness-link:hover, .wellness-link:focus-visible { color: #4f4f4f; }
+/* WCAG 2.5.8 target-size: 12px links -> 24px hit area via the repo's
+   invisible-expansion pattern (transparent padding + matching negative
+   margins — no pixel moves). */
+.wellness-link { display: inline-block; padding: 6px 4px; margin: -6px -4px; }
 /* Footer menu is a footer-direct sibling (like the live menu-primary-2).
    The ul carries no strut (font-size:0 kills anonymous-whitespace lines):
    17px above the 13px links, 11px below. */
