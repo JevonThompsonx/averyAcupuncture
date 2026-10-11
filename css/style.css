@@ -71,7 +71,7 @@ body {
 
 img { max-width: 100%; height: auto; display: block; }
 
-a { color: var(--green); text-decoration: none; }
+a { color: var(--green-ink); text-decoration: none; }
 a:hover { color: var(--green-soft); }
 
 h1, h2, h3, h4, h5, .h1, .h2, .h3 {
@@ -601,17 +601,25 @@ strong, b { font-weight: 700; }
 /* ---------- inner page title band (measured: Bamboo cover, 72px EB Garamond
    white, letter-spacing 5.9px, centered) ---------- */
 .page-band {
-  background: url("../assets/img/Bamboo-1200w.jpg") center center / cover no-repeat;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 0 1rem;
 }
-@supports (background-image: image-set(url("../assets/img/Bamboo-1200w.webp") type("image/webp"))) {
-  .page-band { background-image: url("../assets/img/Bamboo-1200w.webp"); }
+.page-band__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 .page-band__title {
+  position: relative;
+  z-index: 1;
   font-family: var(--serif);
   font-weight: 400;
   color: #fff;
@@ -630,6 +638,8 @@ strong, b { font-weight: 700; }
 /* ---------- X-theme prose (measured: 18px / 30.6px, #7a6d4a, 23.6px between) ---------- */
 .x-text { font-size: 18px; line-height: 30.6px; color: var(--body); }
 .x-text p { margin: 0 0 23.6px; }
+/* Links in body copy must not rely on color alone (WCAG 1.4.1). */
+.x-text a { text-decoration: underline; }
 .x-text p:last-child { margin-bottom: 0; }
 .x-text--ink { color: #000; }
 /* about-veronica's first text block hangs 45px left of the container. */
@@ -857,7 +867,7 @@ strong, b { font-weight: 700; }
 .pp p { font-size: 18px; line-height: 30.6px; color: var(--body); margin: 0 0 23.6px; }
 .pp ul { margin: 0 0 23.6px; padding-left: 1.3em; }
 .pp li { font-size: 18px; line-height: 30.6px; color: var(--body); }
-.pp a { color: var(--green); text-decoration: underline; }
+.pp a { color: var(--green-ink); text-decoration: underline; }
 
 /* ---------- news (blog archive: 1066px column + 300px sidebar) ----------
    The live archive page confines header, article and footer to the left

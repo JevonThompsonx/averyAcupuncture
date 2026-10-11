@@ -480,9 +480,14 @@ def page_index():
 # inner page building blocks
 
 def band(title, height):
-    """Full-width Bamboo title band, centered white serif title."""
+    """Full-width Bamboo title band, centered white serif title. The photo is
+    a real <img> (like the hero) so the browser discovers it during initial
+    parse — a CSS background made Lighthouse's lcp-discovery audit fail on
+    every inner page."""
+    band_img = img("Bamboo.jpg", "", eager=True, decorative=True, sizes="100vw", cls="page-band__img")
     return f"""
 <section class="page-band" style="height:{height}px">
+  {band_img}
   <h1 class="page-band__title">{esc(title)}</h1>
 </section>"""
 

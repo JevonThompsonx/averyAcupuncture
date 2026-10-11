@@ -42,13 +42,14 @@ def variants_for(nat_w):
     return [w for w in CANDIDATES if w < nat_w * 0.95]
 
 
-def encode(im, path, fmt):
+def encode(im, path, fmt, q=None):
+    q = q or {}
     if fmt == "webp":
-        im.save(path, "WEBP", quality=76, method=6)
+        im.save(path, "WEBP", quality=q.get("webp", 76), method=6)
     elif fmt == "avif":
-        im.save(path, "AVIF", quality=46)
+        im.save(path, "AVIF", quality=q.get("avif", 46))
     elif fmt == "jpg":
-        im.save(path, "JPEG", quality=82, optimize=True, progressive=True)
+        im.save(path, "JPEG", quality=q.get("jpg", 82), optimize=True, progressive=True)
 
 
 def main():
@@ -56,6 +57,9 @@ def main():
     manifest = {}
     # never treat our own derivatives as sources: "<stem>-<1200>w.<ext>"
     variant_re = re.compile(r"-\d+w\.(jpg|jpeg|png|webp|avif)$", re.I)
+    # The Bamboo photo is a large decorative background/hero: encode it harder.
+    # Content photos keep the defaults.
+    HARDER_Q = {"webp": 70, "avif": 40, "jpg": 80}
     names = sorted(n for n in os.listdir(IMG_DIR)
                    if n.lower().endswith((".jpg", ".jpeg", ".png"))
                    and not variant_re.search(n))
@@ -81,7 +85,8 @@ def main():
                                     base.convert("RGBA") if base.mode in ("RGBA", "LA", "P") else base.convert("RGB"))
                                 h = round(base.height * w / base.width)
                                 base = base.resize((w, h), Image.LANCZOS)
-                                encode(base, out, fmt)
+                                q = HARDER_Q if name.lower().startswith("bamboo") else None
+                                encode(base, out, fmt, q)
                     entry["widths"].append(w)
                 # whole-image single-size variants (no width in the name)
                 # only for images with no width candidates: keeps small assets
