@@ -1,0 +1,27 @@
+/* about-veronica.html — page-scoped responsive fixes.
+   Auto-linked after css/style.min.css, so these rules win over the shared
+   sheet. Loaded on this page only.
+
+   ROOT CAUSE of this page's horizontal overflow (worst page, measured
+   2026-10-11):
+     css/style.css defines   .x-text--shift { margin-left:-45px; width:1161px; }
+   a FIXED 1161px box hanging 45px left. It fits the desktop design (and is
+   kept there byte-for-byte) but overflows everywhere it doesn't:
+       320 +865 | 375 +814 | 390 +800 | 414 +778 | 768 +451 | 1024 +108.
+   The shared @media (max-width:979px) drops the -45px hang but never resets
+   the 1161px width (so it still overflows on phones), and 980–1279 keeps BOTH
+   the hang and the fixed width (so tablets/small laptops overflow too).
+
+   FIX: below 1200px make the block fluid — fill its .wrap-max column exactly
+   like the page's second text block (.x-text--ink) already does. The 1200px
+   cutoff sits comfortably below the 1280 desktop-parity gate and just above
+   the last width where the fixed box still fits, so >=1200px (incl. the 1280
+   screenshot baseline) renders unchanged. */
+
+@media (max-width: 1199px) {
+  .av-body .x-text--shift {
+    margin-left: 0;
+    width: auto;
+    max-width: 100%;
+  }
+}
