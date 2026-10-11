@@ -1,0 +1,99 @@
+/* office-policy — mobile-only overrides.
+
+   Loaded only on office-policy.html, after style.min.css (build.py links
+   css/pages/<page>.css automatically), so nothing here can reach another
+   page. Desktop (>= 861px) is deliberately untouched: every rule lives
+   inside one (max-width: 860px) block, matching the breakpoint the shared
+   sheet already uses for .wrap-max going to its 85% mobile column.
+
+   Measured before (Playwright, 2026-10-11): no horizontal overflow at
+   320/375/390/414/768/1024 (scrollWidth === clientWidth everywhere), and
+   every interactive element already >= 24x24. The remaining problems were
+   quality, not overflow:
+
+     * 248px bamboo band (inline height in page_policy()) plus a 145px
+       header put the first heading 489px down a 390x844 phone — 46% of the
+       first screen before any content.
+     * 96px of dead space between the band and the first <h2>
+       (45px section padding + 51.4px heading margin), and 111px between
+       sections (measured at 1280) — a desktop rhythm carried onto a
+       272-332px column.
+     * 41.14px serif headings: "Fees and Insurance" measures 269px against
+       the 272px column at a 320px viewport — 3px of slack, so any
+       font-fallback or letter-spacing difference tips it into a 2-line rag;
+       "Missed Appointment Policy" rags over 3 lines (136px tall) at 320.
+     * The tap-to-call link rendered exactly 24px tall — on the WCAG 2.5.8
+       bar with nothing to spare on the page's most valuable target. */
+
+@media (max-width: 860px) {
+
+  /* ---- M3/quality: the band -------------------------------------------------
+     248px of bamboo on a phone is 29% of a 390x844 viewport and, with the
+     145px header, 46% of the first screen. Shorter band; the 248px desktop
+     height is an inline style on .page-band, so `!important` is the only way
+     to answer it — scoped to this query (and this page) so >= 861px, where
+     the inline value is the desktop look we must preserve, is untouched.
+     clamp() ramps it with the viewport instead of one flat value. */
+  .page-band {
+    height: clamp(150px, 41vw, 190px) !important;
+  }
+
+  /* ---- M3: headings that sat 3px from the column edge ---------------------
+     Scale the 41.14px serif with the 85%-wide mobile column instead of
+     trusting it to fit. Everything above ~530px still renders at the
+     original size; below that the longest heading ("Missed Appointment
+     Policy", ~10.3x the font size) tracks the column (0.85x the viewport)
+     at 7.3vw, so all three headings stay on one clean line at every phone
+     width instead of ragging across two or three.
+
+     Measured at 320px (272px column): 41.14px left "Fees and Insurance"
+     269px wide — 3px of slack, so a fallback face tips it over, and
+     "Missed Appointment Policy" raged over three lines (136px tall).
+     26px/27px here gives ~7px of slack and one line.
+
+     overflow-wrap: anywhere is the guard for a fallback face (the longest
+     word, "Confidentiality", is ~145px in a 272px column, so normal
+     wrapping already cannot overflow — this only matters if EB Garamond
+     fails to load). text-wrap: balance is deliberately NOT used: with a
+     two-line heading Chromium picked the more even-looking but weaker
+     "Missed" / "Appointment Policy" over the classic wide-first-line
+     "Missed Appointment" / "Policy". */
+  .op-sec h2 {
+    font-size: clamp(26px, 7.3vw, 41.14px);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.3em;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- quality: rhythm built for a 1161px column --------------------------
+     Desktop separation between sections measures 111px; on a phone that is
+     most of a screen of white. Section padding now carries the separation
+     and the heading's 51.4px top margin is dropped entirely, so the space
+     between the rule under one section and the next heading is 68px
+     (measured) — proportional to the 272-352px column. */
+  .op-sec { padding: 36px 0 32px; }
+  .op-sec--first { padding-top: 24px; }
+  .op-sec .x-text { padding-bottom: 0; }
+  .op-sec .x-hr { margin: 0 0 18px; }
+
+  /* ---- M3: safety net for long unbreakable runs ---------------------------
+     The body copy carries a tel: link and the legal wording; anywhere (not
+     break-word) shrinks the intrinsic min-content width too, which is what
+     actually keeps the scroll area at the viewport width. */
+  .op-sec .x-text p,
+  .op-sec .x-text a {
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- M2: the tap-to-call target -----------------------------------------
+     The <a> inside the 18px/30.6px line measured 24x121 — exactly on the
+     WCAG 2.5.8 bar with nothing to spare on the page's most valuable
+     target. Repo pattern (transparent padding cancelled by a matching
+     negative margin — no pixels move) takes it to 43x121 measured. */
+  .op-sec .x-text a {
+    display: inline-block;
+    padding: 6px 0;
+    margin: -6px 0;
+  }
+}
