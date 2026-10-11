@@ -623,9 +623,11 @@ strong, b { font-weight: 700; }
   font-family: var(--serif);
   font-weight: 400;
   color: #fff;
-  font-size: 72px;
-  line-height: 72px;
-  letter-spacing: 5.9px;
+  /* Scales down on phones instead of running off the side (the fixed 72px
+     title overflowed every mobile viewport). >=1280px is unchanged. */
+  font-size: clamp(30px, 9vw, 72px);
+  line-height: 1;
+  letter-spacing: clamp(1.5px, 0.46vw, 5.9px);
   text-transform: uppercase;
   margin: 0;
 }
@@ -680,6 +682,12 @@ strong, b { font-weight: 700; }
 .js .fx { opacity: 0; transform: translateY(45px); transition: opacity 0.75s ease, transform 0.75s ease; }
 .js .fx--l { transform: translateX(-45px); }
 .js .fx--r { transform: translateX(45px); }
+/* Below the widest desktop breakpoint the horizontal slide would push
+   content past the viewport mid-animation (a transient horizontal scroll
+   on tablets/phones). The entrance stays a fade+rise there instead. */
+@media (max-width: 1199px) {
+  .js .fx--l, .js .fx--r { transform: translateY(45px); }
+}
 .js .fx.is-in { opacity: 1; transform: none; }
 
 /* ---------- white CTA callout card (measured 400/450px wide, 49.35px padding,

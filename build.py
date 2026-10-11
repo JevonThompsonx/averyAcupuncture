@@ -302,6 +302,12 @@ def font_preloads():
 
 def page(name, active, body, description):
     fname = name + ".html"
+    # Per-page stylesheet (optional): css/pages/<name>.css. Lets a page own
+    # its responsive rules without touching the shared sheet. Linked only
+    # when it exists; the file must be committed to ship.
+    page_css = os.path.join("css", "pages", name + ".css")
+    page_css_link = (f'<link rel="stylesheet" href="{asset_ver(page_css)}">'
+                     if os.path.exists(os.path.join(ROOT, page_css)) else "")
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -327,6 +333,7 @@ def page(name, active, body, description):
 <link rel="stylesheet" href="{asset_ver('css/fonts.css')}">
 {JSONLD}
 <link rel="stylesheet" href="{asset_ver('css/style.min.css')}">
+{page_css_link}
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
