@@ -37,12 +37,21 @@
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>
-<link rel="stylesheet" href="css/style.css?v=1791603121">
+<link rel="stylesheet" href="css/style.min.css?v=1791737528">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
-<!-- Accessibility widget (client's own UserWay account, same as the live site) -->
-<script src="https://cdn.userway.org/widget.js" data-account="veWiK0ku6v"></script>
+<!-- Accessibility widget (client's own UserWay account, same as the live
+     site). Deferred to the load event: it was render-blocking on every page
+     and the widget works identically once the page is up. -->
+<script>
+window.addEventListener('load', function () {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.userway.org/widget.js';
+  s.setAttribute('data-account', 'veWiK0ku6v');
+  document.head.appendChild(s);
+});
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -56,7 +65,7 @@
   <div class="navbar">
     <div class="wrap navbar__inner">
       <a class="brand" href="index.html" aria-label="Avery Acupuncture — home">
-        <img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192">
+        <picture><source type="image/avif" srcset="assets/img/avery-logo-transparent.avif"><source type="image/webp" srcset="assets/img/avery-logo-transparent.webp"><img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192" loading="lazy" decoding="async"></picture>
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -91,7 +100,7 @@
 <p>Please call to discuss pricing and packages <a href="tel:8054009723">(805) 400-9723</a> . Or, refer to our insurance and office policies .</p></div>
     </div>
     <div class="fx fx--r x-imgpad">
-      <img src="assets/img/avery-acupuncture-office.jpg" alt="The Avery Acupuncture treatment office" width="1000" height="628" loading="lazy" decoding="async">
+      <picture><source type="image/avif" srcset="assets/img/avery-acupuncture-office-400w.avif 400w, assets/img/avery-acupuncture-office-800w.avif 800w, assets/img/avery-acupuncture-office.jpg 1000w" sizes="(max-width: 860px) 100vw, 560px"><source type="image/webp" srcset="assets/img/avery-acupuncture-office-400w.webp 400w, assets/img/avery-acupuncture-office-800w.webp 800w, assets/img/avery-acupuncture-office.jpg 1000w" sizes="(max-width: 860px) 100vw, 560px"><img src="assets/img/avery-acupuncture-office.jpg" srcset="assets/img/avery-acupuncture-office-400w.jpg 400w, assets/img/avery-acupuncture-office-800w.jpg 800w, assets/img/avery-acupuncture-office.jpg 1000w" sizes="(max-width: 860px) 100vw, 560px" alt="The Avery Acupuncture treatment office" width="1000" height="628" loading="lazy" decoding="async"></picture>
     </div>
   </div>
 </section>
@@ -106,8 +115,8 @@
 
 <div class="at-imgrow">
   <div class="wrap-1000 x-row x-row--fixed">
-    <div class="fx fx--l"><img src="assets/img/48.png" alt="Acupuncture treatment in progress" width="410" height="235" loading="lazy" decoding="async"></div>
-    <div class="fx fx--r"><img src="assets/img/Veronica13-e12809438349151.jpg" alt="Veronica Avery performing acupuncture" width="410" height="235" loading="lazy" decoding="async"></div>
+    <div class="fx fx--l"><picture><source type="image/avif" srcset="assets/img/48.avif"><source type="image/webp" srcset="assets/img/48.webp"><img src="assets/img/48.png" alt="Acupuncture treatment in progress" width="410" height="235" loading="lazy" decoding="async"></picture></div>
+    <div class="fx fx--r"><picture><source type="image/avif" srcset="assets/img/Veronica13-e12809438349151.avif"><source type="image/webp" srcset="assets/img/Veronica13-e12809438349151.webp"><img src="assets/img/Veronica13-e12809438349151.jpg" alt="Veronica Avery performing acupuncture" width="410" height="235" loading="lazy" decoding="async"></picture></div>
   </div>
 </div>
 
@@ -121,9 +130,9 @@
 
 <div class="at-imgrow">
   <div class="wrap-1000 x-row x-row--3">
-    <div class="fx"><img src="assets/img/proofs-0096.jpg" alt="Cupping therapy session" width="410" height="274" loading="lazy" decoding="async"></div>
-    <div class="fx"><img src="assets/img/proofs-0024.jpg" alt="Fire cupping technique" width="410" height="614" loading="lazy" decoding="async"></div>
-    <div class="fx"><img src="assets/img/proofs-0042.jpg" alt="Cupping glasses on a patient's back" width="410" height="274" loading="lazy" decoding="async"></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0096.avif"><source type="image/webp" srcset="assets/img/proofs-0096.webp"><img src="assets/img/proofs-0096.jpg" alt="Cupping therapy session" width="410" height="274" loading="lazy" decoding="async"></picture></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0024.avif"><source type="image/webp" srcset="assets/img/proofs-0024.webp"><img src="assets/img/proofs-0024.jpg" alt="Fire cupping technique" width="410" height="614" loading="lazy" decoding="async"></picture></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0042.avif"><source type="image/webp" srcset="assets/img/proofs-0042.webp"><img src="assets/img/proofs-0042.jpg" alt="Cupping glasses on a patient's back" width="410" height="274" loading="lazy" decoding="async"></picture></div>
   </div>
 </div>
 
@@ -148,9 +157,9 @@
 
 <div class="at-imgrow at-imgrow--last">
   <div class="wrap-1000 x-row x-row--3">
-    <div class="fx"><img src="assets/img/proofs-0071.jpg" alt="Massage therapy at Avery Acupuncture" width="410" height="614" loading="lazy" decoding="async"></div>
-    <div class="fx"><img src="assets/img/proofs-0068.jpg" alt="Therapeutic massage session" width="410" height="614" loading="lazy" decoding="async"></div>
-    <div class="fx"><img src="assets/img/proofs-0063.jpg" alt="Massage therapy treatment" width="410" height="614" loading="lazy" decoding="async"></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0071.avif"><source type="image/webp" srcset="assets/img/proofs-0071.webp"><img src="assets/img/proofs-0071.jpg" alt="Massage therapy at Avery Acupuncture" width="410" height="614" loading="lazy" decoding="async"></picture></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0068.avif"><source type="image/webp" srcset="assets/img/proofs-0068.webp"><img src="assets/img/proofs-0068.jpg" alt="Therapeutic massage session" width="410" height="614" loading="lazy" decoding="async"></picture></div>
+    <div class="fx"><picture><source type="image/avif" srcset="assets/img/proofs-0063.avif"><source type="image/webp" srcset="assets/img/proofs-0063.webp"><img src="assets/img/proofs-0063.jpg" alt="Massage therapy treatment" width="410" height="614" loading="lazy" decoding="async"></picture></div>
   </div>
 </div>
 
@@ -160,7 +169,7 @@
 
 <div class="at-imgrow">
   <div class="wrap-1000 x-row x-row--herbs">
-    <div class="fx fx--l x-imgpad"><img src="assets/img/avery-herbs.jpg" alt="Chinese herbal medicines" width="1042" height="1389" loading="lazy" decoding="async"></div>
+    <div class="fx fx--l x-imgpad"><picture><source type="image/avif" srcset="assets/img/avery-herbs-400w.avif 400w, assets/img/avery-herbs-800w.avif 800w, assets/img/avery-herbs.jpg 1042w" sizes="(max-width: 860px) 100vw, 307px"><source type="image/webp" srcset="assets/img/avery-herbs-400w.webp 400w, assets/img/avery-herbs-800w.webp 800w, assets/img/avery-herbs.jpg 1042w" sizes="(max-width: 860px) 100vw, 307px"><img src="assets/img/avery-herbs.jpg" srcset="assets/img/avery-herbs-400w.jpg 400w, assets/img/avery-herbs-800w.jpg 800w, assets/img/avery-herbs.jpg 1042w" sizes="(max-width: 860px) 100vw, 307px" alt="Chinese herbal medicines" width="1042" height="1389" loading="lazy" decoding="async"></picture></div>
     <div class="fx fx--r">
       <h3 class="x-h3">Herbs</h3>
       <div class="x-text"><p>Chinese herbs come in a wide variety of quality and strength. For maximum benefit, I recommend brands that are manufactured with strict quality-control guidelines, and are organic or natural when possible. I will happily guide you through your options. I offer different ways to take herbs including:</p></div>
@@ -178,7 +187,7 @@
   </div>
   <div class="wrap-1000 x-row">
     <div class="fx fx--l x-imgpad">
-      <img src="assets/img/veronica-avery-acupuncture-treatment-room1.jpg" alt="Avery Acupuncture treatment room" width="800" height="1041" loading="lazy" decoding="async">
+      <picture><source type="image/avif" srcset="assets/img/veronica-avery-acupuncture-treatment-room1-400w.avif 400w, assets/img/veronica-avery-acupuncture-treatment-room1.jpg 800w" sizes="(max-width: 860px) 100vw, 560px"><source type="image/webp" srcset="assets/img/veronica-avery-acupuncture-treatment-room1-400w.webp 400w, assets/img/veronica-avery-acupuncture-treatment-room1.jpg 800w" sizes="(max-width: 860px) 100vw, 560px"><img src="assets/img/veronica-avery-acupuncture-treatment-room1.jpg" srcset="assets/img/veronica-avery-acupuncture-treatment-room1-400w.jpg 400w, assets/img/veronica-avery-acupuncture-treatment-room1.jpg 800w" sizes="(max-width: 860px) 100vw, 560px" alt="Avery Acupuncture treatment room" width="800" height="1041" loading="lazy" decoding="async"></picture>
     </div>
     <div class="fx fx--r">
       <h3 class="x-h3">Initial Visit</h3>
@@ -193,7 +202,7 @@
       <div class="x-text"><p>Follow-up appointments last approximately an hour and in addition to acupuncture, they may also include herbal consultation, massage, cupping or use of other Chinese medicinal tools. Together we will set a treatment plan that works best with your health needs and lifestyle.</p></div>
     </div>
     <div class="fx fx--r x-imgpad55">
-      <img src="assets/img/13.png" alt="Follow-up acupuncture treatment" width="410" height="235" loading="lazy" decoding="async">
+      <picture><source type="image/avif" srcset="assets/img/13.avif"><source type="image/webp" srcset="assets/img/13.webp"><img src="assets/img/13.png" alt="Follow-up acupuncture treatment" width="410" height="235" loading="lazy" decoding="async"></picture>
     </div>
   </div>
   <div class="wrap-max"><hr class="x-hr"></div>
@@ -212,25 +221,24 @@
   <div class="wrap site-footer__widgets">
     <section class="footer-widget" aria-label="Facebook">
       <h2 class="footer-widget__title">Like Us On Facebook</h2>
-      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" title="Avery Acupuncture on Facebook"></iframe>
+      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a href="https://www.wellness.com" style="color:#d5d5d5">Wellness.com</a><a href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac" style="color:#d5d5d5">My Profile</a>
+        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
-        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy"></a></p>
+        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><picture><source type="image/avif" srcset="assets/img/Unknown.avif"><source type="image/webp" srcset="assets/img/Unknown.webp"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy" decoding="async"></picture></a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
   </div>
   <div class="wrap site-footer__bottom">
-    <img class="footer-logo" src="assets/img/avery-logo-black-wcolor2.png" alt="Avery Acupuncture" width="180" height="190" decoding="async">
-    <p>&nbsp;</p>
+    <picture><source type="image/avif" srcset="assets/img/avery-logo-black-wcolor2.avif"><source type="image/webp" srcset="assets/img/avery-logo-black-wcolor2.webp"><img src="assets/img/avery-logo-black-wcolor2.png" class="footer-logo" alt="Avery Acupuncture" width="180" height="190" loading="lazy" decoding="async"></picture>    <p>&nbsp;</p>
     <!-- NOTE: "Acupunture" (missing c) is the live site's own spelling,
          preserved verbatim. Jolly Creative Agency was the previous
          developer. Keep or remove this credit per the client's contract. -->
@@ -242,6 +250,6 @@
     </ul>
   </nav>
 </footer>
-<script src="js/main.js?v=1791600768"></script>
+<script src="js/main.js?v=1791737075"></script>
 </body>
 </html>

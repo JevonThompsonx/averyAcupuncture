@@ -37,12 +37,21 @@
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>
-<link rel="stylesheet" href="css/style.css?v=1791603121">
+<link rel="stylesheet" href="css/style.min.css?v=1791737528">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
-<!-- Accessibility widget (client's own UserWay account, same as the live site) -->
-<script src="https://cdn.userway.org/widget.js" data-account="veWiK0ku6v"></script>
+<!-- Accessibility widget (client's own UserWay account, same as the live
+     site). Deferred to the load event: it was render-blocking on every page
+     and the widget works identically once the page is up. -->
+<script>
+window.addEventListener('load', function () {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.userway.org/widget.js';
+  s.setAttribute('data-account', 'veWiK0ku6v');
+  document.head.appendChild(s);
+});
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -56,7 +65,7 @@
   <div class="navbar">
     <div class="wrap navbar__inner">
       <a class="brand" href="index.html" aria-label="Avery Acupuncture — home">
-        <img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192">
+        <picture><source type="image/avif" srcset="assets/img/avery-logo-transparent.avif"><source type="image/webp" srcset="assets/img/avery-logo-transparent.webp"><img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192" loading="lazy" decoding="async"></picture>
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -76,7 +85,7 @@
   <h1 class="page-band__title">About Veronica</h1>
 </section>
 <section class="av-photo">
-  <img class="av-portrait fx" src="assets/img/veronica.jpg" alt="Veronica Avery, Licensed Acupuncturist and Herbalist" width="450" height="302" loading="lazy" decoding="async">
+  <picture><source type="image/avif" srcset="assets/img/veronica-400w.avif 400w, assets/img/veronica.jpg 450w" sizes="(max-width: 860px) 100vw, 450px"><source type="image/webp" srcset="assets/img/veronica-400w.webp 400w, assets/img/veronica.jpg 450w" sizes="(max-width: 860px) 100vw, 450px"><img class="av-portrait fx" src="assets/img/veronica.jpg" srcset="assets/img/veronica-400w.jpg 400w, assets/img/veronica.jpg 450w" sizes="(max-width: 860px) 100vw, 450px" alt="Veronica Avery, Licensed Acupuncturist and Herbalist" width="450" height="302" loading="lazy" decoding="async"></picture>
 </section>
 <section class="av-body">
   <div class="wrap-max">
@@ -84,8 +93,8 @@
 <p>I felt so hopeless after that visit with the doctor. I spoke with my yoga teacher and her daughter about my experience and they referred me to a natural medicine healer in a nearby town. I don’t recall what his exact credentials were, but I know he was trained in acupressure, chiropractic and massage therapy. He asked me what made the pain better and what made it worse. When I said it was worse after yoga, he asked me what kinds of yoga postures seemed to make it worse. When I said surfing, he asked me to lie down on the exam table and demonstrate how I paddled. When I told him I was learning flamenco and salsa, he asked what kind of shoes I wore. When I said standing at my teaching job made it worse, he asked me to stand in front of him as if I were at the blackboard. Needless to say, his inquiries were very thorough and I was beginning to wonder if I was ever going to get my massage. He listened and watched. Then he broke out into a smile. He had come up with a diagnosis that would change my medical condition dramatically.</p>
 <p>He explained to me that all of the backbends I was doing in yoga were compressing my lower back and that I needed to balance them with more forward bends and abdominal core strengtheners. He was also a surfer and when I was on the table, he suggested I bend my knees while paddling on my longboard or knee paddle to ease the lower back compression. He warned me that the high heels that I was wearing for salsa and flamenco would add stress to my legs and low back but that scooping my tailbone down and slightly bending my knees would help (something my flamenco teacher was constantly telling me to do). The final suggestion was the most impressive and life changing advice he gave me.</p></div>
     <div class="av-pair fx">
-      <img src="assets/img/IMG_3467-min.jpg" alt="Veronica Avery treating a patient" width="2048" height="1152" loading="lazy" decoding="async">
-      <img src="assets/img/IMG_3507.jpg" alt="Inside the Avery Acupuncture practice" width="1500" height="844" loading="lazy" decoding="async">
+      <picture><source type="image/avif" srcset="assets/img/IMG_3467-min-400w.avif 400w, assets/img/IMG_3467-min-800w.avif 800w, assets/img/IMG_3467-min-1200w.avif 1200w, assets/img/IMG_3467-min.jpg 2048w" sizes="(max-width: 860px) 100vw, 560px"><source type="image/webp" srcset="assets/img/IMG_3467-min-400w.webp 400w, assets/img/IMG_3467-min-800w.webp 800w, assets/img/IMG_3467-min-1200w.webp 1200w, assets/img/IMG_3467-min.jpg 2048w" sizes="(max-width: 860px) 100vw, 560px"><img src="assets/img/IMG_3467-min.jpg" srcset="assets/img/IMG_3467-min-400w.jpg 400w, assets/img/IMG_3467-min-800w.jpg 800w, assets/img/IMG_3467-min-1200w.jpg 1200w, assets/img/IMG_3467-min.jpg 2048w" sizes="(max-width: 860px) 100vw, 560px" alt="Veronica Avery treating a patient" width="2048" height="1152" loading="lazy" decoding="async"></picture>
+      <picture><source type="image/avif" srcset="assets/img/IMG_3507-400w.avif 400w, assets/img/IMG_3507-800w.avif 800w, assets/img/IMG_3507-1200w.avif 1200w, assets/img/IMG_3507.jpg 1500w" sizes="(max-width: 860px) 100vw, 560px"><source type="image/webp" srcset="assets/img/IMG_3507-400w.webp 400w, assets/img/IMG_3507-800w.webp 800w, assets/img/IMG_3507-1200w.webp 1200w, assets/img/IMG_3507.jpg 1500w" sizes="(max-width: 860px) 100vw, 560px"><img src="assets/img/IMG_3507.jpg" srcset="assets/img/IMG_3507-400w.jpg 400w, assets/img/IMG_3507-800w.jpg 800w, assets/img/IMG_3507-1200w.jpg 1200w, assets/img/IMG_3507.jpg 1500w" sizes="(max-width: 860px) 100vw, 560px" alt="Inside the Avery Acupuncture practice" width="1500" height="844" loading="lazy" decoding="async"></picture>
     </div>
     <div class="x-text x-text--ink fx fx--l"><p>When I was in undergraduate school, I worked at an outdoor flower shop for 5 years. I truly believe that the prolonged standing on concrete is how my low back and leg pain started. I always stood erect with knees locked. Because of the flexibility in my joints, my knees actually hyperextended slightly backward and that led to a sway back in my lower spine. The natural medicine doctor stood next to me as I demonstrated my standing posture and he told me exactly what I was doing wrong. He explained to me that the blood was able to flow down via gravity with ease but with my knees hyperextended and my lower back in a sway, the return blood flow was slowed by the compression in my lower spine….hence the painful throbbing sensation and vein issues around my knees. He demonstrated how to put a slight bend in my knees while standing and how to tuck my tailbone downward to take the pressure off the lower back. That very advice unlocked the secret to healing my chronic pain. Simple. Powerful. Natural.</p>
 <p>That was it!!!!! Of course, he did bodywork and adjusted my spine but the most powerful part of that healing session was educating me on my condition. He gave me the power to heal myself by teaching me what I was doing wrong and showing me the proper way to carry my body. I will never every forget this experience. He truly empowered me and changed my life. I told myself that I wanted to help people in the way that he helped me.</p>
@@ -101,25 +110,24 @@
   <div class="wrap site-footer__widgets">
     <section class="footer-widget" aria-label="Facebook">
       <h2 class="footer-widget__title">Like Us On Facebook</h2>
-      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" title="Avery Acupuncture on Facebook"></iframe>
+      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a href="https://www.wellness.com" style="color:#d5d5d5">Wellness.com</a><a href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac" style="color:#d5d5d5">My Profile</a>
+        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
-        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy"></a></p>
+        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><picture><source type="image/avif" srcset="assets/img/Unknown.avif"><source type="image/webp" srcset="assets/img/Unknown.webp"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy" decoding="async"></picture></a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
   </div>
   <div class="wrap site-footer__bottom">
-    <img class="footer-logo" src="assets/img/avery-logo-black-wcolor2.png" alt="Avery Acupuncture" width="180" height="190" decoding="async">
-    <p>&nbsp;</p>
+    <picture><source type="image/avif" srcset="assets/img/avery-logo-black-wcolor2.avif"><source type="image/webp" srcset="assets/img/avery-logo-black-wcolor2.webp"><img src="assets/img/avery-logo-black-wcolor2.png" class="footer-logo" alt="Avery Acupuncture" width="180" height="190" loading="lazy" decoding="async"></picture>    <p>&nbsp;</p>
     <!-- NOTE: "Acupunture" (missing c) is the live site's own spelling,
          preserved verbatim. Jolly Creative Agency was the previous
          developer. Keep or remove this credit per the client's contract. -->
@@ -131,6 +139,6 @@
     </ul>
   </nav>
 </footer>
-<script src="js/main.js?v=1791600768"></script>
+<script src="js/main.js?v=1791737075"></script>
 </body>
 </html>

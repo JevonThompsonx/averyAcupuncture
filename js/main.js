@@ -111,4 +111,26 @@
   } else {
     fades.forEach(function (el) { el.classList.add("is-in"); });
   }
+
+  // The Wellness.com badge script injects its own <iframe> with no title
+  // attribute (Lighthouse frame-title audit). Label it for screen readers.
+  function titleBadgeFrames() {
+    var frames = document.querySelectorAll('.wellness-badge iframe[id^="iframe_badge_"]');
+    frames.forEach(function (f) {
+      if (!f.getAttribute("title")) {
+        f.setAttribute("title", "Wellness.com profile badge for Avery Acupuncture");
+      }
+    });
+  }
+  var badgeScript = document.getElementById("script_badge_160_200_3245076");
+  if (badgeScript) {
+    badgeScript.addEventListener("load", titleBadgeFrames);
+    badgeScript.addEventListener("error", titleBadgeFrames);
+  }
+  window.addEventListener("load", function () {
+    titleBadgeFrames();
+    // the badge script can finish after window load — retry briefly
+    setTimeout(titleBadgeFrames, 1500);
+    setTimeout(titleBadgeFrames, 4000);
+  });
 })();

@@ -46,6 +46,33 @@ for p, soup in soups.items():
             missing.append(src)
     check(not missing, f"{p}: all <img> resolve ({len(missing)} missing {missing[:3]})")
 
+print("\n== A3c: every <source> srcset candidate resolves (progressive images) ==")
+for p, soup in soups.items():
+    missing = []
+    for source in soup.find_all("source"):
+        if not source.get("srcset"):
+            continue
+        for cand in source["srcset"].split(","):
+            url = cand.strip().split(" ")[0]
+            if not url or url.startswith(("http", "//", "data:")):
+                continue
+            if not os.path.exists(os.path.join(ROOT, unquote(url))):
+                missing.append(url)
+    # <img srcset> fallbacks too
+    for img in soup.find_all("img"):
+        for cand in (img.get("srcset") or "").split(","):
+            url = cand.strip().split(" ")[0]
+            if not url or url.startswith(("http", "//", "data:")):
+                continue
+            if not os.path.exists(os.path.join(ROOT, unquote(url))):
+                missing.append(url)
+    check(not missing, f"{p}: all srcset candidates resolve ({len(missing)} missing {missing[:3]})")
+
+print("\n== A3d: every <picture> keeps a universal <img> fallback ==")
+for p, soup in soups.items():
+    bad = [pic.get("class") for pic in soup.find_all("picture") if not pic.find("img")]
+    check(not bad, f"{p}: all <picture> have <img> fallbacks ({bad[:3]})")
+
 print("\n== A3b: every asset referenced from CSS resolves ==")
 for css_path in [f for f in os.listdir(os.path.join(ROOT, "css")) if f.endswith(".css")]:
     css = open(os.path.join(ROOT, "css", css_path), encoding="utf-8").read()
@@ -153,7 +180,7 @@ css = open(os.path.join(ROOT, "css", "style.css"), encoding="utf-8").read()
 for token, name in [("#6b9d47", "primary green"), ("#8abe3c", "hover green"),
                     ("#e17d4a", "accent orange"), ("#7a6d4a", "body brown"),
                     ("#b7b733", "olive button"), ("EB Garamond", "serif face"),
-                    ("Open Sans", "sans face"), ("Bamboo.jpg", "hero background")]:
+                    ("Open Sans", "sans face"), ("Bamboo-1200w", "hero/band bamboo photo")]:
     check(token in css, f"css retains {name} ({token})")
 
 print("\n== A9b: ANTI-FABRICATION — every external URL must exist on the live site ==")
@@ -213,6 +240,17 @@ for p, soup in soups.items():
     alts = all(img.get("alt") is not None for img in soup.find_all("img"))
     check(alts, f"{p}: every img has alt attribute")
 check("@media (max-width: 860px)" in css and ".nav-toggle { display: flex; }" in css, "mobile breakpoint + hamburger exist")
+
+print("\n== A11: perf wiring (min css, hero fetchpriority, deferred widget) ==")
+for p, soup in soups.items():
+    css = [l.get("href", "").split("?")[0] for l in soup.find_all("link", rel="stylesheet") if l.get("href")]
+    local_css = [c for c in css if not c.startswith("http")]
+    check("css/style.min.css" in local_css, f"{p}: loads minified css ({local_css})")
+    check(not any("userway" in (s.get("src") or "") for s in soup.find_all("script")),
+          f"{p}: UserWay widget not render-blocking (deferred)")
+hero_imgs = [i for i in soups["index.html"].find_all("img") if i.get("fetchpriority") == "high"]
+check(len(hero_imgs) == 1, "index.html: hero image is eager with fetchpriority=high")
+check(len(soups["index.html"].find_all("picture")) > 0, "index.html: responsive <picture> markup present")
 
 print("\n" + "=" * 60)
 if fails:

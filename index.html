@@ -37,12 +37,21 @@
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>
-<link rel="stylesheet" href="css/style.css?v=1791603121">
+<link rel="stylesheet" href="css/style.min.css?v=1791737528">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
-<!-- Accessibility widget (client's own UserWay account, same as the live site) -->
-<script src="https://cdn.userway.org/widget.js" data-account="veWiK0ku6v"></script>
+<!-- Accessibility widget (client's own UserWay account, same as the live
+     site). Deferred to the load event: it was render-blocking on every page
+     and the widget works identically once the page is up. -->
+<script>
+window.addEventListener('load', function () {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.userway.org/widget.js';
+  s.setAttribute('data-account', 'veWiK0ku6v');
+  document.head.appendChild(s);
+});
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -56,7 +65,7 @@
   <div class="navbar">
     <div class="wrap navbar__inner">
       <a class="brand" href="index.html" aria-label="Avery Acupuncture — home">
-        <img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192">
+        <picture><source type="image/avif" srcset="assets/img/avery-logo-transparent.avif"><source type="image/webp" srcset="assets/img/avery-logo-transparent.webp"><img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192" loading="lazy" decoding="async"></picture>
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -72,6 +81,7 @@
 <main id="main">
 
 <section class="hero" id="top">
+  <picture><source type="image/avif" srcset="assets/img/Bamboo-400w.avif 400w, assets/img/Bamboo-800w.avif 800w, assets/img/Bamboo-1200w.avif 1200w, assets/img/Bamboo.jpg 2000w" sizes="100vw"><source type="image/webp" srcset="assets/img/Bamboo-400w.webp 400w, assets/img/Bamboo-800w.webp 800w, assets/img/Bamboo-1200w.webp 1200w, assets/img/Bamboo.jpg 2000w" sizes="100vw"><img src="assets/img/Bamboo.jpg" srcset="assets/img/Bamboo-400w.jpg 400w, assets/img/Bamboo-800w.jpg 800w, assets/img/Bamboo-1200w.jpg 1200w, assets/img/Bamboo.jpg 2000w" sizes="100vw" class="hero__img" alt="" loading="eager" decoding="async" fetchpriority="high"></picture>
   <div class="wrap">
     <h1 class="hero__quote">"Natural forces within us are the true healers of disease."<span class="hero__cite">-Hippocrates</span></h1>
   </div>
@@ -104,21 +114,21 @@ including Paso Robles, Templeton, Atascadero, King City, Lake Nacimiento.</p>
     <div class="grw">
       <p class="reviews__label">We Care About Our Patients</p>
       <div class="grw__summary">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/grw-business.jpg" alt="Avery Acupuncture office" width="44" height="44" loading="lazy">
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/grw-business.avif"><source type="image/webp" srcset="assets/img/grw-business.webp"><img src="assets/img/grw-business.jpg" class="grw__avatar" alt="Avery Acupuncture office" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><span class="grw__biz">Avery Acupuncture &amp; Natural Medicine, Inc.</span></div>
         </div>
         <p class="grw__score">5.0 <span class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</span></p>
         <p class="grw__based">Based on 55 reviews</p>
-        <p class="grw__powered">powered by <img src="assets/img/grw-google-logo.png" alt="Google" width="60" height="20" loading="lazy"></p>
-        <p><a class="grw__write" href="https://search.google.com/local/writereview?placeid=ChIJuRLeDkPF7IARdquigwOGvhE" target="_blank" rel="noopener">review us on <img src="assets/img/grw-g-logo.png" alt="Google" width="16" height="16" loading="lazy"></a></p>
+        <p class="grw__powered">powered by <picture><source type="image/avif" srcset="assets/img/grw-google-logo.avif"><source type="image/webp" srcset="assets/img/grw-google-logo.webp"><img src="assets/img/grw-google-logo.png" alt="Google" width="60" height="20" loading="lazy" decoding="async"></picture></p>
+        <p><a class="grw__write" href="https://search.google.com/local/writereview?placeid=ChIJuRLeDkPF7IARdquigwOGvhE" target="_blank" rel="noopener">review us on <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" alt="Google" width="16" height="16" loading="lazy" decoding="async"></picture></a></p>
       </div>
       <div class="grw__track">
         <button class="grw__arrow grw__prev" type="button" aria-label="Previous reviews">&lsaquo;</button>
         <div class="grw__slider">
 
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_79119c0c30cbcc97c9328748c531095e.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_79119c0c30cbcc97c9328748c531095e.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_79119c0c30cbcc97c9328748c531095e.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_79119c0c30cbcc97c9328748c531095e.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/101862595320958562536/reviews" target="_blank" rel="noopener">Saundra Alvarez</a>
           <span class="grw__time">3 years ago</span></div>
         </div>
@@ -126,8 +136,8 @@ including Paso Robles, Templeton, Atascadero, King City, Lake Nacimiento.</p>
         <blockquote class="grw__text">I can't believe it has taken me this long to write a review for Veronica... better late than never. If you are looking for compassionate care than this is where you should be. The first visit consists of a full overview of your concerns and problem areas. Veronica is thorough in her quest to craft a patient specific plan. Personally I never thought I'd be okay with the thought of allowing another person to poke me repeatedly with needles, but with gentle care and time I was able to push through my own anxieties. I went in for sciatic pain and the improvement is astonishing. I felt like I'd be relegated to pain pills and nerve blockers but thanks to Veronica that has not been the case. You won't regret coming here.</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_dd1cfb33f640505514d4fc39bba8be97.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_dd1cfb33f640505514d4fc39bba8be97.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_dd1cfb33f640505514d4fc39bba8be97.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_dd1cfb33f640505514d4fc39bba8be97.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/104996774555487371231/reviews" target="_blank" rel="noopener">Sharon Ross</a>
           <span class="grw__time">4 years ago</span></div>
         </div>
@@ -137,8 +147,8 @@ I've gone back a couple of times after doing something to aggravate my shoulder.
 I highly recommend Veronica!</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_094b81cf94253e99291dc3705887936f.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_094b81cf94253e99291dc3705887936f.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_094b81cf94253e99291dc3705887936f.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_094b81cf94253e99291dc3705887936f.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/116808712708577326584/reviews" target="_blank" rel="noopener">Gilbert Charley</a>
           <span class="grw__time">4 years ago</span></div>
         </div>
@@ -146,8 +156,8 @@ I highly recommend Veronica!</blockquote>
         <blockquote class="grw__text">Very clean and professional service. Rejuvenated after going there. Great atmosphere also. The owner is very kind and sweet. I will visit again soon. Hope you all consider visiting this place.</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_ae08d9bc9c8956bea425c20f2c1e937c.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_ae08d9bc9c8956bea425c20f2c1e937c.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_ae08d9bc9c8956bea425c20f2c1e937c.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_ae08d9bc9c8956bea425c20f2c1e937c.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/108384913617450242557/reviews" target="_blank" rel="noopener">Weston Jolly</a>
           <span class="grw__time">4 years ago</span></div>
         </div>
@@ -161,8 +171,8 @@ I was so weak during my first visit that it took all of my energy, for the day, 
 I’ve chosen to share my experience for the expressed purpose that anyone considering getting “real help” might know they’re in truly in the hands of someone who is exceedingly dedicated to assisting you heal.  Namaste.</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_089cc7cb547a13caa38c2d53db108279.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_089cc7cb547a13caa38c2d53db108279.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_089cc7cb547a13caa38c2d53db108279.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_089cc7cb547a13caa38c2d53db108279.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/102098457799196722681/reviews" target="_blank" rel="noopener">Mihir Patel</a>
           <span class="grw__time">4 years ago</span></div>
         </div>
@@ -170,8 +180,8 @@ I’ve chosen to share my experience for the expressed purpose that anyone consi
         <blockquote class="grw__text">Veronica at Avery Acupuncture has been great! She listens carefully to what’s going on and treats root causes of issues. They always make time for appointments and I make a point to come in every time I’m back in the area.</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_1d4489c294d47d5ea573bcc6cdf0cff7.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_1d4489c294d47d5ea573bcc6cdf0cff7.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_1d4489c294d47d5ea573bcc6cdf0cff7.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_1d4489c294d47d5ea573bcc6cdf0cff7.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/106760918772234851196/reviews" target="_blank" rel="noopener">Daisha Schwartz</a>
           <span class="grw__time">5 years ago</span></div>
         </div>
@@ -179,8 +189,8 @@ I’ve chosen to share my experience for the expressed purpose that anyone consi
         <blockquote class="grw__text">I was referred to Avery Acupuncture by a friend. Never having done acupuncture before, and not being entirely comfortable with needles, I was really nervous going into my first appointment. Veronica made my first experience really positive. Each session is tailored to my needs and I always leave feeling refreshed and relaxed. I can tell Veronica has my best interests in mind, and she really cares for all of her patients. The entire staff is welcoming and kind. The office is neat and clean. Overall, I would highly recommend Avery Acupuncture.</blockquote>
       </figure>
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_924d2fd42fbd9e42ebc692dbeb29ae2d.jpg" alt="" width="44" height="44" loading="lazy">
+        <picture><source type="image/avif" srcset="assets/img/grw-g-logo.avif"><source type="image/webp" srcset="assets/img/grw-g-logo.webp"><img src="assets/img/grw-g-logo.png" class="grw__g" alt="Google review" width="20" height="20" loading="lazy" decoding="async"></picture>
+        <div class="grw__head"><picture><source type="image/avif" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_924d2fd42fbd9e42ebc692dbeb29ae2d.avif"><source type="image/webp" srcset="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_924d2fd42fbd9e42ebc692dbeb29ae2d.webp"><img src="assets/img/ChIJuRLeDkPF7IARdquigwOGvhE_924d2fd42fbd9e42ebc692dbeb29ae2d.jpg" class="grw__avatar" alt="" width="44" height="44" loading="lazy" decoding="async"></picture>
           <div><a class="grw__name" href="https://www.google.com/maps/contrib/103076459833258978000/reviews" target="_blank" rel="noopener">Dona Robertson</a>
           <span class="grw__time">7 years ago</span></div>
         </div>
@@ -232,25 +242,24 @@ I’ve chosen to share my experience for the expressed purpose that anyone consi
   <div class="wrap site-footer__widgets">
     <section class="footer-widget" aria-label="Facebook">
       <h2 class="footer-widget__title">Like Us On Facebook</h2>
-      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" title="Avery Acupuncture on Facebook"></iframe>
+      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a href="https://www.wellness.com" style="color:#d5d5d5">Wellness.com</a><a href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac" style="color:#d5d5d5">My Profile</a>
+        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
-        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy"></a></p>
+        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><picture><source type="image/avif" srcset="assets/img/Unknown.avif"><source type="image/webp" srcset="assets/img/Unknown.webp"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy" decoding="async"></picture></a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
   </div>
   <div class="wrap site-footer__bottom">
-    <img class="footer-logo" src="assets/img/avery-logo-black-wcolor2.png" alt="Avery Acupuncture" width="180" height="190" decoding="async">
-    <p>&nbsp;</p>
+    <picture><source type="image/avif" srcset="assets/img/avery-logo-black-wcolor2.avif"><source type="image/webp" srcset="assets/img/avery-logo-black-wcolor2.webp"><img src="assets/img/avery-logo-black-wcolor2.png" class="footer-logo" alt="Avery Acupuncture" width="180" height="190" loading="lazy" decoding="async"></picture>    <p>&nbsp;</p>
     <!-- NOTE: "Acupunture" (missing c) is the live site's own spelling,
          preserved verbatim. Jolly Creative Agency was the previous
          developer. Keep or remove this credit per the client's contract. -->
@@ -262,6 +271,6 @@ I’ve chosen to share my experience for the expressed purpose that anyone consi
     </ul>
   </nav>
 </footer>
-<script src="js/main.js?v=1791600768"></script>
+<script src="js/main.js?v=1791737075"></script>
 </body>
 </html>

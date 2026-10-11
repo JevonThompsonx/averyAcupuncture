@@ -27,7 +27,7 @@ FB_IFRAME = ('<iframe src="https://www.facebook.com/plugins/page.php?href=https%
               '%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline'
               '&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false'
               '&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" '
-              'scrolling="no" frameborder="0" allowtransparency="true" title="Avery Acupuncture on Facebook"></iframe>')
+              'scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>')
 WELLNESS_BADGE = ('<script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" '
                   'id="script_badge_160_200_3245076" type="text/javascript"></script>')
 CAL_ICON = ('<svg viewBox="0 0 20 19" fill="none" aria-hidden="true" focusable="false">'
@@ -52,6 +52,16 @@ DIMS = {
     "veronica-avery-acupuncture-treatment-room1.jpg": (800, 1041),
     "13.png": (410, 235),
 }
+# Responsive image variants manifest (written by build_images.py). Absent when
+# variants have not been generated — build.py then emits plain <img> markup.
+def _load_variants():
+    try:
+        return json.load(open(os.path.join(ROOT, "assets", "img", "variants.json")))
+    except (OSError, ValueError):
+        return {}
+
+VARIANTS = _load_variants()
+
 JSONLD = """<script type="application/ld+json">
 {"@context":"https://schema.org","@type":"MedicalClinic",
 "name":"Avery Acupuncture & Natural Medicine, Inc.",
@@ -189,7 +199,7 @@ def header(active, variant="wide"):
   <div class="navbar">
     <div class="{wrap} navbar__inner">
       <a class="brand" href="index.html" aria-label="Avery Acupuncture — home">
-        <img src="assets/img/avery-logo-transparent.png" alt="Avery Acupuncture" width="245" height="192">
+        {img("avery-logo-transparent.png", "Avery Acupuncture", 245, 192)}
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -215,20 +225,19 @@ def footer(variant="wide"):
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        {WELLNESS_BADGE}<a href="https://www.wellness.com" style="color:#d5d5d5">Wellness.com</a><a href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac" style="color:#d5d5d5">My Profile</a>
+        {WELLNESS_BADGE}<a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
-        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy"></a></p>
+        <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener">{img("Unknown.png", "People love us on Yelp", 100, 100)}</a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="{YT_FOOT}" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="{YT_FOOT}" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
   </div>
   <div class="{'wrap-news' if variant == 'news' else 'wrap'} site-footer__bottom">
-    <img class="footer-logo" src="assets/img/avery-logo-black-wcolor2.png" alt="Avery Acupuncture" width="180" height="190" decoding="async">
-    <p>&nbsp;</p>
+    {img("avery-logo-black-wcolor2.png", "Avery Acupuncture", 180, 190, cls="footer-logo")}    <p>&nbsp;</p>
     <!-- NOTE: "Acupunture" (missing c) is the live site's own spelling,
          preserved verbatim. Jolly Creative Agency was the previous
          developer. Keep or remove this credit per the client's contract. -->
@@ -249,6 +258,25 @@ def asset_ver(path):
         return f"{path}?v={int(os.path.getmtime(full))}"
     except OSError:
         return path
+
+
+def minify_css():
+    """Write css/style.min.css from css/style.css. Regex-based and
+    conservatively scoped to this file's constructs (verified by the visual
+    regression diff); the source file stays the editable original. The min
+    file is what pages load (~15% smaller, no more "unminified CSS")."""
+    src = os.path.join(ROOT, "css", "style.css")
+    dst = os.path.join(ROOT, "css", "style.min.css")
+    if os.path.exists(dst) and os.path.getmtime(dst) >= os.path.getmtime(src):
+        return
+    text = open(src, encoding="utf-8").read()
+    out = re.sub(r"/\*.*?\*/", "", text, flags=re.S)   # comments
+    out = re.sub(r"\s+", " ", out)                     # collapse whitespace
+    out = re.sub(r"\s*([{};:,>~])\s*", r"\1", out)     # around structural chars
+    out = out.replace(";}", "}")                       # trailing semicolons
+    with open(dst, "w", encoding="utf-8") as f:
+        f.write(out.strip())
+    print(f"wrote css/style.min.css ({len(out):,} bytes from {len(text):,})")
 
 def page(name, active, body, description):
     fname = name + ".html"
@@ -277,12 +305,21 @@ def page(name, active, body, description):
 <link rel="dns-prefetch" href="https://www.wellness.com">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,700&family=Pathway+Gothic+One&display=swap&display=swap" rel="stylesheet">
 {JSONLD}
-<link rel="stylesheet" href="{asset_ver('css/style.css')}">
+<link rel="stylesheet" href="{asset_ver('css/style.min.css')}">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
-<!-- Accessibility widget (client's own UserWay account, same as the live site) -->
-<script src="https://cdn.userway.org/widget.js" data-account="veWiK0ku6v"></script>
+<!-- Accessibility widget (client's own UserWay account, same as the live
+     site). Deferred to the load event: it was render-blocking on every page
+     and the widget works identically once the page is up. -->
+<script>
+window.addEventListener('load', function () {{
+  var s = document.createElement('script');
+  s.src = 'https://cdn.userway.org/widget.js';
+  s.setAttribute('data-account', 'veWiK0ku6v');
+  document.head.appendChild(s);
+}});
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -296,8 +333,13 @@ def page(name, active, body, description):
 # special sections
 
 def hero():
+    # Hero image is a real <img> (fetchpriority=high) instead of a CSS
+    # background: the browser discovers it during initial parse (no LCP
+    # discovery delay) and gets responsive AVIF/WebP derivatives.
+    hero_img = img("Bamboo.jpg", "", eager=True, decorative=True, sizes="100vw", cls="hero__img")
     return f"""
 <section class="hero" id="top">
+  {hero_img}
   <div class="wrap">
     <h1 class="hero__quote">"Natural forces within us are the true healers of disease."<span class="hero__cite">-Hippocrates</span></h1>
   </div>
@@ -334,10 +376,10 @@ def reviews_section():
         avatar = ""
         base = os.path.basename(r.get("img") or "")
         if base and os.path.exists(os.path.join(ROOT, "assets", "img", base)):
-            avatar = f'<img class="grw__avatar" src="assets/img/{base}" alt="" width="44" height="44" loading="lazy">'
+            avatar = img(base, "", 44, 44, cls="grw__avatar", decorative=True)
         cards.append(f"""
       <figure class="grw__card">
-        <img class="grw__g" src="assets/img/grw-g-logo.png" alt="Google review" width="20" height="20" loading="lazy">
+        {img("grw-g-logo.png", "Google review", 20, 20, cls="grw__g")}
         <div class="grw__head">{avatar}
           <div><a class="grw__name" href="{r['profile']}" target="_blank" rel="noopener">{esc(r['name'])}</a>
           <span class="grw__time">{esc(r['time'])}</span></div>
@@ -352,13 +394,13 @@ def reviews_section():
     <div class="grw">
       <p class="reviews__label">We Care About Our Patients</p>
       <div class="grw__summary">
-        <div class="grw__head"><img class="grw__avatar" src="assets/img/grw-business.jpg" alt="Avery Acupuncture office" width="44" height="44" loading="lazy">
+        <div class="grw__head">{img("grw-business.jpg", "Avery Acupuncture office", 44, 44, cls="grw__avatar")}
           <div><span class="grw__biz">Avery Acupuncture &amp; Natural Medicine, Inc.</span></div>
         </div>
         <p class="grw__score">5.0 {stars()}</p>
         <p class="grw__based">Based on 55 reviews</p>
-        <p class="grw__powered">powered by <img src="assets/img/grw-google-logo.png" alt="Google" width="60" height="20" loading="lazy"></p>
-        <p><a class="grw__write" href="https://search.google.com/local/writereview?placeid=ChIJuRLeDkPF7IARdquigwOGvhE" target="_blank" rel="noopener">review us on <img src="assets/img/grw-g-logo.png" alt="Google" width="16" height="16" loading="lazy"></a></p>
+        <p class="grw__powered">powered by {img("grw-google-logo.png", "Google", 60, 20)}</p>
+        <p><a class="grw__write" href="https://search.google.com/local/writereview?placeid=ChIJuRLeDkPF7IARdquigwOGvhE" target="_blank" rel="noopener">review us on {img("grw-g-logo.png", "Google", 16, 16)}</a></p>
       </div>
       <div class="grw__track">
         <button class="grw__arrow grw__prev" type="button" aria-label="Previous reviews">&lsaquo;</button>
@@ -427,11 +469,44 @@ def xtext(blocks):
     """Render recovered p/list blocks as an X-theme text column."""
     return render_blocks(blocks, "", {})
 
-def img(src, alt, w=None, h=None):
+def img(src, alt, w=None, h=None, sizes=None, cls="", eager=False, decorative=False):
+    """Responsive image: AVIF + WebP <source>s over a width/height-reserved
+    <img> fallback pointing at the untouched original (zero CLS, works in
+    every browser). Degrades to a plain <img> when variants.json is absent.
+    sizes: srcset sizes attribute (drives candidate selection)."""
     if w is None and src in DIMS:
         w, h = DIMS[src]
     dim = f' width="{w}" height="{h}"' if w and h else ""
-    return f'<img src="assets/img/{src}" alt="{esc(alt)}"{dim} loading="lazy" decoding="async">'
+    alt_attr = ' alt=""' if decorative else f' alt="{esc(alt)}"'
+    cls_attr = f' class="{cls}"' if cls else ""
+    prio = " fetchpriority=\"high\"" if eager else ""
+    loading = "eager" if eager else "lazy"
+    if not sizes:
+        sizes = "(max-width: 860px) 100vw, 560px"
+    v = VARIANTS.get(src, {})
+    widths = v.get("widths", [])
+    stem = os.path.splitext(src)[0]
+    if widths:
+        nat_w = v.get("natural", [w or 0, h or 0])[0]
+        tail = f"assets/img/{src} {nat_w}w"
+        def srcset(fmt):
+            return ", ".join([f"assets/img/{stem}-{x}w.{fmt} {x}w" for x in widths] + [tail])
+        return (
+            f'<picture>'
+            f'<source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}">'
+            f'<source type="image/webp" srcset="{srcset("webp")}" sizes="{sizes}">'
+            f'<img src="assets/img/{src}" srcset="{srcset("jpg")}" sizes="{sizes}"'
+            f'{cls_attr}{alt_attr}{dim} loading="{loading}" decoding="async"{prio}>'
+            f'</picture>')
+    if os.path.exists(os.path.join(ROOT, "assets", "img", stem + ".webp")):
+        # fixed-size asset (logo/avatar/badge): single-size modern variants
+        return (
+            f'<picture>'
+            f'<source type="image/avif" srcset="assets/img/{stem}.avif">'
+            f'<source type="image/webp" srcset="assets/img/{stem}.webp">'
+            f'<img src="assets/img/{src}"{cls_attr}{alt_attr}{dim} loading="{loading}" decoding="async"{prio}>'
+            f'</picture>')
+    return f'<img src="assets/img/{src}"{cls_attr}{alt_attr}{dim} loading="{loading}" decoding="async"{prio}>'
 
 def page_about_veronica():
     d = INV["about-veronica"]
@@ -441,7 +516,7 @@ def page_about_veronica():
     return f"""
 {band("About Veronica", 248)}
 <section class="av-photo">
-  {img("veronica.jpg", "Veronica Avery, Licensed Acupuncturist and Herbalist", 450, 302).replace("<img ", '<img class="av-portrait fx" ')}
+  {img("veronica.jpg", "Veronica Avery, Licensed Acupuncturist and Herbalist", 450, 302, sizes="(max-width: 860px) 100vw, 450px").replace("<img ", '<img class="av-portrait fx" ')}
 </section>
 <section class="av-body">
   <div class="wrap-max">
@@ -511,9 +586,9 @@ def page_about_treatment():
 
 <div class="at-imgrow">
   <div class="wrap-1000 x-row x-row--3">
-    <div class="fx">{img("proofs-0096.jpg", "Cupping therapy session")}</div>
-    <div class="fx">{img("proofs-0024.jpg", "Fire cupping technique")}</div>
-    <div class="fx">{img("proofs-0042.jpg", "Cupping glasses on a patient's back")}</div>
+    <div class="fx">{img("proofs-0096.jpg", "Cupping therapy session", sizes="(max-width: 860px) 100vw, 360px")}</div>
+    <div class="fx">{img("proofs-0024.jpg", "Fire cupping technique", sizes="(max-width: 860px) 100vw, 360px")}</div>
+    <div class="fx">{img("proofs-0042.jpg", "Cupping glasses on a patient's back", sizes="(max-width: 860px) 100vw, 360px")}</div>
   </div>
 </div>
 
@@ -538,9 +613,9 @@ def page_about_treatment():
 
 <div class="at-imgrow at-imgrow--last">
   <div class="wrap-1000 x-row x-row--3">
-    <div class="fx">{img("proofs-0071.jpg", "Massage therapy at Avery Acupuncture")}</div>
-    <div class="fx">{img("proofs-0068.jpg", "Therapeutic massage session")}</div>
-    <div class="fx">{img("proofs-0063.jpg", "Massage therapy treatment")}</div>
+    <div class="fx">{img("proofs-0071.jpg", "Massage therapy at Avery Acupuncture", sizes="(max-width: 860px) 100vw, 360px")}</div>
+    <div class="fx">{img("proofs-0068.jpg", "Therapeutic massage session", sizes="(max-width: 860px) 100vw, 360px")}</div>
+    <div class="fx">{img("proofs-0063.jpg", "Massage therapy treatment", sizes="(max-width: 860px) 100vw, 360px")}</div>
   </div>
 </div>
 
@@ -550,7 +625,7 @@ def page_about_treatment():
 
 <div class="at-imgrow">
   <div class="wrap-1000 x-row x-row--herbs">
-    <div class="fx fx--l x-imgpad">{img("avery-herbs.jpg", "Chinese herbal medicines")}</div>
+    <div class="fx fx--l x-imgpad">{img("avery-herbs.jpg", "Chinese herbal medicines", sizes="(max-width: 860px) 100vw, 307px")}</div>
     <div class="fx fx--r">
       <h3 class="x-h3">Herbs</h3>
       <div class="x-text">{xtext([b[12]])}</div>
@@ -760,6 +835,7 @@ PAGES = {
 }
 
 def main():
+    minify_css()
     for fname, (active, fn, desc) in PAGES.items():
         out = page(fname.split(".")[0], active, fn(), desc)
         with open(os.path.join(ROOT, fname), "w", encoding="utf-8") as f:
