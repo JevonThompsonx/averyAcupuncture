@@ -1,0 +1,118 @@
+/* ==========================================================================
+   index.html — mobile overrides (page-owned, MOBILE-RULES M7)
+
+   Scope: every rule lives inside a max-width media query, so the desktop
+   render (>= 861px) is untouched — M5 desktop parity is a hard gate.
+   Classes touched are the homepage's own: .hero/.hero__quote, .intro-band,
+   .cta-row/.video-frame, .reviews/.grw* (the Google review widget that only
+   exists on this page), .loc-band/.loc-info/.map-full. Shared chrome
+   (header, topbar, nav, footer) is never touched here — and a page
+   stylesheet only loads on its own page anyway.
+
+   Measured with /tmp/opencode/mobile_audit.py + checkpage.py against
+   http://127.0.0.1:8200 (see the commit message for the before/after).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   M1/M3 — hero quote: the 49.6px display type contains one unbreakable
+   token, "-HIPPOCRATES", whose min-content width measures 334px. Inside the
+   85% .wrap on a 320px phone the text box is only 238px, so the token ran
+   55px past the viewport (scrollWidth 375 at vw=320) and 4px past at 375px.
+   Fix: let the hero use the full content width (its own 1.25rem padding is
+   the gutter) and scale the quote down on phones — M5 allows typography to
+   scale below 861px.
+   Before: scrollWidth 375 / 379 / 390 at vw 320 / 375 / 390.
+   After:  scrollWidth 320 / 375 / 390.                                   */
+@media (max-width: 860px) {
+  .hero .wrap { width: 100%; max-width: none; }
+  .hero__quote {
+    font-size: clamp(30px, 9vw, 49.6px);
+    line-height: 1.32;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   M3 — tablet band (861-979px): the shared <=979px rule gives the label a
+   76px column, and the word "PATIENTS" measures 91px at the label's 19.8px
+   size, so the last line ran under the review card and was cut off. Widen
+   the label track to clear the longest word; the stacked layout below takes
+   over at 860px, and the desktop >= 980px render is untouched.           */
+@media (max-width: 979px) {
+  .grw { grid-template-columns: 104px 1fr; }
+}
+
+/* --------------------------------------------------------------------------
+   M1/M3 — Google review widget (.grw): the shared <=979px rule leaves the
+   widget a 76px label column + a 1fr track, but the track's min-content is
+   the 264px card (.grw__slider grid-auto-columns) and 76 + 8 + 264 = 348px
+   no longer fits the 272px column a 320px phone offers — the card ran 55px
+   past the viewport, and the label wrapped four characters per line
+   (204px tall for three words).
+   Fix: stack the widget into one column (label above the track) and lay the
+   cards out with flex so they keep their measured 264px width inside the
+   widget's own horizontal scroller instead of widening the page.         */
+@media (max-width: 860px) {
+  .grw {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 0.25rem;
+  }
+  .reviews__label { grid-column: 1; padding-bottom: 0.9em; }
+  .grw__track { grid-column: 1; }
+  /* flex (not the desktop grid) so the 264px cards overflow *inside* the
+     scroller: the slider is a scroll container, its own width stays the
+     column width. min() keeps the card inside a very narrow phone. */
+  .grw__slider { display: flex; }
+  .grw__card { flex: 0 0 min(264px, 100%); }
+  /* M3 safety net: card copy is client-supplied (recovered/reviews.json), so
+     one long unbreakable token must never widen the 264px card. `anywhere`
+     (not `break-word`) also shrinks the min-content size, so the card can
+     never be pushed past its track. */
+  .grw__card { overflow-wrap: anywhere; }
+  /* Divider above the widget: 50px side insets ate 100px of a 320px phone's
+     272px column, leaving a 172px rule. Trim to 16px; the rule keeps its
+     measured vertical rhythm. */
+  .reviews-hr__pad { padding: 0 16px 16px; }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile quality (phones only, 641-860px keeps the desktop type scale —
+   the columns there are still 545-732px wide).
+   The display sizes below were measured for wide columns; stacked into a
+   ~272px column they wrapped to 3-5 lines of 51px type. Scale them down and
+   re-tune the section rhythm that was measured against those wide columns. */
+@media (max-width: 640px) {
+  .intro-band h2 {
+    font-size: clamp(26px, 7.6vw, 41.14px);
+    line-height: 1.2;
+    margin: 34px 0 10px;
+  }
+  .cta-row__text h2 {
+    font-size: clamp(26px, 7.6vw, 51.44px);
+    line-height: 1.15;
+  }
+  .loc-band h2,
+  .loc-info h2 {
+    font-size: clamp(28px, 8vw, 51.44px);
+    line-height: 1.2;
+  }
+
+  /* section rhythm: desktop paddings were tuned for wide columns */
+  .intro-band { padding-bottom: 2.5rem; }
+  .loc-band h2 { margin: 40px 0 10px; }
+  .loc-band { padding-bottom: 2.25rem; }
+  .loc-info { padding: 2.25rem 0 1.25rem; }
+  .rule-wrap { padding: 28px 0; }
+  .reviews { padding-bottom: 44px; }
+
+  /* A 459px map in a 272px column reads as a portrait slab; ~320px keeps
+     the embed legible on a phone. */
+  .map-full iframe { height: 320px; }
+}
+
+/* Small phones (320px): shave the card's side padding so the text column
+   keeps a usable measure. */
+@media (max-width: 360px) {
+  .grw__slider { padding: 0.25rem 0; }
+  .grw__card { padding: 14px 1rem; }
+}
