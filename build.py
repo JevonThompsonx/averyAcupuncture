@@ -17,19 +17,67 @@ REVIEWS = json.load(open(os.path.join(ROOT, "recovered", "reviews.json")))
 BOOKING = "https://patient.unifiedpractice.com/avery-acupuncture-natural-medicine-inc"
 PHONE_DISPLAY = "(805) 400-9723"
 PHONE_TEL = "805-400-9723"
-MAP_IFRAME = ('<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3242.823179779206'
-              '!2d-120.69375458445003!3d35.63208534027264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1'
-              '!3m3!1m2!1s0x80ecc55e6350d303%3A0x7430f658ca4bd501!2s1704%20Spring%20St%20%23202%2C'
-              '%20Paso%20Robles%2C%20CA%2093446%2C%20USA!5e0!3m2!1sen!2sin!4v1577686125064'
-              '!5m2!1sen!2sin" width="100%" height="450" style="border:0" allowfullscreen="" '
-              'loading="lazy" title="Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"></iframe>')
-FB_IFRAME = ('<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com'
-              '%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline'
-              '&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false'
-              '&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" '
-              'scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>')
-WELLNESS_BADGE = ('<script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" '
-                  'id="script_badge_160_200_3245076" type="text/javascript"></script>')
+MAP_SRC = ('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3242.823179779206'
+           '!2d-120.69375458445003!3d35.63208534027264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1'
+           '!3m3!1m2!1s0x80ecc55e6350d303%3A0x7430f658ca4bd501!2s1704%20Spring%20St%20%23202%2C'
+           '%20Paso%20Robles%2C%20CA%2093446%2C%20USA!5e0!3m2!1sen!2sin!4v1577686125064'
+           '!5m2!1sen!2sin')
+MAP_TITLE = "Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"
+FB_SRC = ('https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com'
+          '%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline'
+          '&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false'
+          '&show_facepile=false&appId')
+FB_TITLE = "Avery Acupuncture on Facebook"
+
+PLAY_ICON = ('<svg class="embed-facade__icon" viewBox="0 0 24 24" aria-hidden="true" '
+             'focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>')
+
+
+def embed_facade(variant, src, title, label, preview=None, pw=None, ph=None, allow=None):
+    """Click-to-load embed facade. The heavy third-party player (YouTube's
+    ~1.6 MB of JS, the Google Maps API) is fetched only when the visitor
+    asks for it; until then the frame shows the video's YouTube thumbnail
+    or a screenshot of the live embed, so the page looks the same. On click
+    the facade is swapped for the real iframe, matching the original markup
+    exactly. (Lighthouse performance pass: keeps the players' JS, requests
+    and cookies out of page load.)"""
+    attrs = f' data-src="{esc(src)}" data-title="{esc(title)}"'
+    if allow:
+        attrs += f' data-allow="{esc(allow)}"'
+    img = ''
+    if preview:
+        dim = f' width="{pw}" height="{ph}"' if pw and ph else ''
+        img = (f'<img class="embed-facade__img" src="{esc(preview)}" alt=""{dim} '
+               'loading="lazy" decoding="async">')
+    return (f'<div class="embed-facade embed-facade--{variant}"{attrs}>{img}'
+            f'<button type="button" class="embed-facade__btn" aria-label="{esc(label)}">'
+            f'<span class="embed-facade__circle">{PLAY_ICON}</span></button></div>')
+
+
+def yt_facade(variant, vid, title, label=None):
+    """YouTube embed facade: thumbnail preview, real player on click."""
+    return embed_facade(
+        variant, f"https://www.youtube.com/embed/{vid}?autoplay=1&rel=0", title,
+        label or f"Play video: {title}",
+        preview=f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg", pw=480, ph=360,
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture")
+
+
+def map_facade(variant):
+    """Google Maps embed facade: screenshot preview, live map on click."""
+    return embed_facade(variant, MAP_SRC, MAP_TITLE,
+                        f"Show interactive map: {MAP_TITLE}",
+                        preview="assets/img/map-embed-preview.jpg", pw=1162, ph=451)
+
+
+def fb_slot():
+    """Facebook page-plugin slot: the plugin loads only once the footer
+    scrolls into view (js/main.js defers it), so its ~390 KB of JS and
+    autoplaying video stay out of page load. Renders the same plugin
+    markup once loaded."""
+    return f'<div class="fb-slot" data-src="{esc(FB_SRC)}" data-title="{esc(FB_TITLE)}"></div>'
+
+
 CAL_ICON = ('<svg viewBox="0 0 20 19" fill="none" aria-hidden="true" focusable="false">'
             '<rect x="1.5" y="3" width="17" height="14.5" rx="1.5" stroke="#fff" stroke-width="2"/>'
             '<line x1="1.5" y1="7.5" x2="18.5" y2="7.5" stroke="#fff" stroke-width="2"/>'
@@ -77,8 +125,6 @@ JSONLD = """<script type="application/ld+json">
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>"""
-YT_HOME = "https://www.youtube.com/embed/z-_mGPgrBok"
-YT_FOOT = "https://www.youtube.com/embed/YAffgKRg6P0"
 
 NAV = [
     ("Meet Veronica Avery", "about-veronica.html", []),
@@ -220,19 +266,19 @@ def footer(variant="wide"):
   <div class="{'wrap-news' if variant == 'news' else 'wrap'} site-footer__widgets">
     <section class="footer-widget" aria-label="Facebook">
       <h2 class="footer-widget__title">Like Us On Facebook</h2>
-      {FB_IFRAME}
+      {fb_slot()}
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        {WELLNESS_BADGE}<a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
+        <img class="wellness-badge-img" src="assets/img/wellness-badge-preview.jpg" alt="Wellness.com profile badge: 5 out of 5 stars, 51 reviews" width="160" height="176" loading="lazy" decoding="async"><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
         <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener">{img("Unknown.png", "People love us on Yelp", 100, 100)}</a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="{YT_FOOT}" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        {yt_facade("ytfoot", "YAffgKRg6P0", "Avery Acupuncture video")}
       </div>
     </section>
   </div>
@@ -260,13 +306,11 @@ def asset_ver(path):
         return path
 
 
-def minify_css():
-    """Write css/style.min.css from css/style.css. Regex-based and
-    conservatively scoped to this file's constructs (verified by the visual
-    regression diff); the source file stays the editable original. The min
-    file is what pages load (~15% smaller, no more "unminified CSS")."""
-    src = os.path.join(ROOT, "css", "style.css")
-    dst = os.path.join(ROOT, "css", "style.min.css")
+def minify_css(src, dst):
+    """Write dst from src. Regex-based and conservatively scoped to this
+    project's constructs (verified by the visual regression diff); the
+    source file stays the editable original. The min file is what pages
+    load (~15% smaller, no more "unminified CSS")."""
     if os.path.exists(dst) and os.path.getmtime(dst) >= os.path.getmtime(src):
         return
     text = open(src, encoding="utf-8").read()
@@ -276,7 +320,18 @@ def minify_css():
     out = out.replace(";}", "}")                       # trailing semicolons
     with open(dst, "w", encoding="utf-8") as f:
         f.write(out.strip())
-    print(f"wrote css/style.min.css ({len(out):,} bytes from {len(text):,})")
+    print(f"wrote {os.path.relpath(dst, ROOT)} ({len(out):,} bytes from {len(text):,})")
+
+
+def css_href(path):
+    """<link> tag for a CSS file, minified on demand (both the shared sheet
+    and per-page sheets). Keeps the Lighthouse 'minify CSS' audit clean."""
+    full = os.path.join(ROOT, path)
+    if not os.path.exists(full):
+        return ""
+    dst = full[:-len(".css")] + ".min.css"
+    minify_css(full, dst)
+    return f'<link rel="stylesheet" href="{asset_ver(path[:-len(".css")] + ".min.css")}">'
 
 def font_preloads():
     """Preload the two most-used latin faces so text renders in the right
@@ -305,9 +360,7 @@ def page(name, active, body, description):
     # Per-page stylesheet (optional): css/pages/<name>.css. Lets a page own
     # its responsive rules without touching the shared sheet. Linked only
     # when it exists; the file must be committed to ship.
-    page_css = os.path.join("css", "pages", name + ".css")
-    page_css_link = (f'<link rel="stylesheet" href="{asset_ver(page_css)}">'
-                     if os.path.exists(os.path.join(ROOT, page_css)) else "")
+    page_css_link = css_href(os.path.join("css", "pages", name + ".css"))
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -329,10 +382,13 @@ def page(name, active, body, description):
 <link rel="dns-prefetch" href="https://www.facebook.com">
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="dns-prefetch" href="https://www.wellness.com">
+<!-- Video facade thumbnails are served from YouTube's image CDN (the same
+     thumbnail the player shows before play), so the preview paints fast. -->
+<link rel="preconnect" href="https://i.ytimg.com">
 {font_preloads()}
 <link rel="stylesheet" href="{asset_ver('css/fonts.css')}">
 {JSONLD}
-<link rel="stylesheet" href="{asset_ver('css/style.min.css')}">
+{css_href('css/style.css')}
 {page_css_link}
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
@@ -390,7 +446,7 @@ including Paso Robles, Templeton, Atascadero, King City, Lake Nacimiento.</p>
       <a class="btn" href="{BOOKING}" target="_blank" rel="noopener">Book Now</a>
     </div>
     <div class="video-frame">
-      <iframe src="{YT_HOME}" width="560" height="315" title="Avery Acupuncture introduction video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      {yt_facade("yt", "z-_mGPgrBok", "Avery Acupuncture introduction video")}
     </div>
   </div>
 </section>"""
@@ -475,7 +531,7 @@ def location_section():
   </div>
   <div class="wrap-1000 rule-wrap"><hr class="rule"></div>
 </section>
-<div class="map-full">""" + MAP_IFRAME + """</div>"""
+<div class="map-full">""" + map_facade("map") + """</div>"""
 
 # ---------------------------------------------------------------------------
 # page bodies
@@ -628,10 +684,10 @@ def page_about_treatment():
 <div class="at-imgrow">
   <div class="wrap-max x-row x-row--videos">
     <div class="x-video fx fx--l">
-      <iframe src="https://www.youtube.com/embed/NODHaSuXo5c" title="Avery Acupuncture treatment video, April 4 2024 (first of two)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      {yt_facade("yt", "NODHaSuXo5c", "Avery Acupuncture treatment video, April 4 2024 (first of two)")}
     </div>
     <div class="x-video fx fx--r">
-      <iframe src="https://www.youtube.com/embed/NjkSy0s9hz0" title="Avery Acupuncture treatment video, April 4 2024 (second of two)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      {yt_facade("yt", "NjkSy0s9hz0", "Avery Acupuncture treatment video, April 4 2024 (second of two)")}
     </div>
   </div>
 </div>
@@ -758,7 +814,7 @@ def page_contact():
   </div>
 </section>
 <section class="cp-map">
-  <div class="wrap-max">{MAP_IFRAME.replace('width="100%"', 'width="1161"')}</div>
+  <div class="wrap-max">{map_facade("mapcp")}</div>
 </section>
 <section class="cp-sec">
   <div class="wrap-1000">
@@ -887,7 +943,8 @@ PAGES = {
 }
 
 def main():
-    minify_css()
+    minify_css(os.path.join(ROOT, "css", "style.css"),
+               os.path.join(ROOT, "css", "style.min.css"))
     for fname, (active, fn, desc) in PAGES.items():
         out = page(fname.split(".")[0], active, fn(), desc)
         with open(os.path.join(ROOT, fname), "w", encoding="utf-8") as f:

@@ -13,6 +13,12 @@
    #7a7448, sub-menu links → --green-ink; review score #f57c00 → #b85000;
    "powered by" #777 → #6f6f6f. Footer logo box height is now auto so the
    301×270 image renders at its natural aspect (was squished 180×190).
+   --------------------------------------------------------------------------
+   2026-10-12 Lighthouse performance pass: .embed-facade* — click-to-load
+   facades for the YouTube players and Google Maps embeds (the heavy
+   third-party players now load only on click; previews are the video
+   thumbnail / a screenshot of the live embed). See js/main.js for the
+   swap-on-click handler and the Facebook plugin's scroll-deferred load.
    ========================================================================== */
 
 :root {
@@ -696,6 +702,62 @@ strong, b { font-weight: 700; }
 .x-row--fixed img { width: auto; }
 .x-video { padding: 15px; }
 .x-video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+
+/* ---------- click-to-load embed facades (YouTube players, Google Maps) ----------
+   The third-party player is fetched only when the visitor clicks; the preview
+   is the video's YouTube thumbnail or a screenshot of the live embed, so the
+   rest state looks the same. On click js/main.js swaps the facade for the
+   real iframe (same markup the page had before). */
+.embed-facade {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background: #1c1c1c;
+  border: 0;
+}
+.embed-facade__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.embed-facade__btn {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.embed-facade__circle {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.62);
+  transition: background 0.2s ease;
+}
+.embed-facade__btn:hover .embed-facade__circle { background: rgba(0, 0, 0, 0.78); }
+.embed-facade__icon { width: 28px; height: 28px; color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .embed-facade__circle { transition: none; }
+}
+/* Geometry matches the embed each facade replaces: 16:9 players, the
+   full-bleed map (live iframe renders 459px — see .map-full) and the
+   conditions-page map (450px). */
+.embed-facade--yt { aspect-ratio: 16 / 9; }
+.embed-facade--ytfoot { height: 315px; }
+.embed-facade--map { height: 459px; }
+.embed-facade--mapcp { height: 450px; }
+@media (max-width: 860px) {
+  .embed-facade--ytfoot { height: auto; aspect-ratio: 16 / 9; }
+}
 
 /* Bulleted herb list, measured 18px / 30.6 with standard disc markers. */
 .x-list { margin: 0; padding-left: 1.3em; }

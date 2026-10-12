@@ -121,26 +121,59 @@
     fades.forEach(function (el) { el.classList.add("is-in"); });
   }
 
-  // The Wellness.com badge script injects its own <iframe> with no title
-  // attribute (Lighthouse frame-title audit). Label it for screen readers.
-  function titleBadgeFrames() {
-    var frames = document.querySelectorAll('.wellness-badge iframe[id^="iframe_badge_"]');
-    frames.forEach(function (f) {
-      if (!f.getAttribute("title")) {
-        f.setAttribute("title", "Wellness.com profile badge for Avery Acupuncture");
-      }
-    });
+  // Click-to-load embed facades (YouTube players, Google Maps). The heavy
+  // third-party player is fetched only when the visitor asks for it; the
+  // preview is the video's YouTube thumbnail or a screenshot of the live
+  // embed. On click the facade is swapped for the real iframe, matching the
+  // markup the page had before the Lighthouse performance pass.
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest(".embed-facade__btn") : null;
+    if (!btn) return;
+    var box = btn.closest(".embed-facade");
+    if (!box) return;
+    var f = document.createElement("iframe");
+    f.src = box.getAttribute("data-src");
+    f.title = box.getAttribute("data-title") || "";
+    var allow = box.getAttribute("data-allow");
+    if (allow) f.setAttribute("allow", allow);
+    f.setAttribute("allowfullscreen", "");
+    f.setAttribute("frameborder", "0");
+    box.replaceWith(f);
+  });
+
+  // Defer below-the-fold third-party embeds (Facebook page plugin) until
+  // the footer actually scrolls into view: it costs ~390 KB of JS and an
+  // autoplaying video, but nothing is lost — it appears the moment the
+  // footer is on screen. (The Wellness.com badge is a static screenshot:
+  // its script only renders on window load, so it cannot be deferred.)
+  function deferUntilVisible(selector, activate) {
+    var nodes = Array.prototype.slice.call(document.querySelectorAll(selector));
+    if (!nodes.length) return;
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach(activate);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        activate(entry.target);
+      });
+    }, { rootMargin: "300px" });
+    nodes.forEach(function (n) { io.observe(n); });
   }
-  var badgeScript = document.getElementById("script_badge_160_200_3245076");
-  if (badgeScript) {
-    badgeScript.addEventListener("load", titleBadgeFrames);
-    badgeScript.addEventListener("error", titleBadgeFrames);
-  }
-  window.addEventListener("load", function () {
-    titleBadgeFrames();
-    // the badge script can finish after window load — retry briefly
-    setTimeout(titleBadgeFrames, 1500);
-    setTimeout(titleBadgeFrames, 4000);
+  deferUntilVisible(".fb-slot", function (slot) {
+    var f = document.createElement("iframe");
+    f.src = slot.getAttribute("data-src");
+    f.title = slot.getAttribute("data-title") || "";
+    f.width = 275;
+    f.height = 370;
+    f.setAttribute("style", "border:none;overflow:hidden");
+    f.setAttribute("scrolling", "no");
+    f.setAttribute("frameborder", "0");
+    f.setAttribute("allowtransparency", "true");
+    f.setAttribute("loading", "lazy");
+    slot.replaceWith(f);
   });
 
   // Hero photo parallax, ported from the live site's X theme: the hero's

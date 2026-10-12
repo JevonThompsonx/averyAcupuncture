@@ -190,6 +190,7 @@ live_links = set(json.load(open(os.path.join(ROOT, "recovered", "live-external-l
 ALLOWED_PREFIXES = (
     "https://fonts.googleapis.com", "https://fonts.gstatic.com",
     "https://www.googletagmanager.com",
+    "https://i.ytimg.com",  # YouTube video thumbnails (same video, standard CDN)
     "https://www.youtube.com/embed/", "https://www.youtube.com",
     "https://www.facebook.com/plugins/page.php", "https://www.facebook.com",
     "https://www.google.com", "https://www.wellness.com",

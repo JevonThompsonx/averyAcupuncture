@@ -1,0 +1,1 @@
+@media (min-width:980px) and (max-width:1266px){.news-layout{grid-template-columns:minmax(0,1fr) 200px}}@media (min-width:1267px){.news-layout{grid-template-columns:1066px minmax(0,1fr)}}@media (max-width:979px){.news-side{padding:15px 1rem 25px}.news-search input{font-size:16px;padding:12px 12px 12px 38px;background-position:12px center;background-size:18px 18px}}

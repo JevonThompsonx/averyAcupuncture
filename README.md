@@ -462,6 +462,51 @@ ported:
   shadow/border-only transition — no transform, so the scroll-snap carousel's
   behaviour is untouched; disabled under `prefers-reduced-motion`.
 
+### 6h. Lighthouse performance pass (2026-10-12)
+
+The site's first-party payload is tiny; its load cost was almost entirely
+third-party players loading during page load. The dominant offenders, in
+order: two YouTube player iframes (~1.6 MB of JS each), the Google Maps
+embed API (~350 KB), the Facebook page plugin (~390 KB + autoplaying
+video), the Wellness.com badge (~176 KB, and it *blocked HTML parsing*
+because it was a synchronous script), plus Cloudflare's challenge script.
+Every one of them is now load-on-intent or deferred, with no change to the
+rest-state appearance:
+
+- **YouTube players (4 embeds: index ×2, about-treatment ×2)** are now
+  click-to-load facades: the video's own YouTube thumbnail (same image the
+  player shows before play) plus a play button; the real player iframe is
+  created on click. This also removes the players' cookies (the Lighthouse
+  `inspector-issues` best-practices audit was failing on them).
+- **Google Maps embeds (index, contact)** are the same pattern, previewed
+  with a screenshot of the live embed captured at build time
+  (`assets/img/map-embed-preview.jpg`). The Maps embed was setting Google's
+  `NID` cookie (the `third-party-cookies` best-practices audit).
+- **Facebook page plugin** keeps its exact markup but loads only when the
+  footer scrolls into view (IntersectionObserver), so it is never in the
+  load window.
+- **Wellness.com badge** is a screenshot of the live badge plus the same
+  profile links (its script renders on `window load` only, so it cannot be
+  deferred without breaking — a live badge would need the client to replace
+  it with an image asset of their own).
+- **Per-page stylesheets** are now minified like the shared sheet
+  (Lighthouse `unminified-css` audit).
+- Measured (Lighthouse 13.5 mobile, same machine, before → after):
+  performance **92 → 99**, TBT **161 → 0 ms**, Speed Index
+  **5,076 → 1,204 ms**, best-practices **73 → 96**, accessibility and SEO
+  stay at **100**, axe-core 0 violations on all 16 page/viewport runs.
+  Total requests during load on index: 172 → 34.
+
+Two best-practices items remain and are **environmental, not site
+defects**: `errors-in-console` fires because *something on the measuring
+machine* (this host's DNS sinkhole, or an ad-blocker extension) blocks
+`googletagmanager.com` — the GA4 tag the client asked to keep loads fine
+for normal visitors; and Cloudflare's edge-injected
+`cdn-cgi/challenge-platform` script sporadically triggers the
+`deprecations` audit — that script is injected by the Cloudflare proxy,
+not by this site, and can be avoided by turning off JavaScript Detections
+in the Cloudflare dashboard (Security → Bots) if the client wants.
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link

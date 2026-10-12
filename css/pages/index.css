@@ -108,6 +108,7 @@
   /* A 459px map in a 272px column reads as a portrait slab; ~320px keeps
      the embed legible on a phone. */
   .map-full iframe { height: 320px; }
+  .map-full .embed-facade--map { height: 320px; }
 }
 
 /* Small phones (320px): shave the card's side padding so the text column

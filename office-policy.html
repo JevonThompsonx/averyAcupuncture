@@ -19,6 +19,9 @@
 <link rel="dns-prefetch" href="https://www.facebook.com">
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="dns-prefetch" href="https://www.wellness.com">
+<!-- Video facade thumbnails are served from YouTube's image CDN (the same
+     thumbnail the player shows before play), so the preview paints fast. -->
+<link rel="preconnect" href="https://i.ytimg.com">
 <link rel="preload" href="assets/fonts/opensans_v44_memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/ebgaramond_v33_SlGUmQSNjdsmc35JDF1K5GR1SDk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css?v=1791741804">
@@ -37,8 +40,8 @@
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>
-<link rel="stylesheet" href="css/style.min.css?v=1791785548">
-<link rel="stylesheet" href="css/pages/office-policy.css?v=1791758597">
+<link rel="stylesheet" href="css/style.min.css?v=1791820177">
+<link rel="stylesheet" href="css/pages/office-policy.min.css?v=1791817882">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
@@ -117,19 +120,19 @@ window.addEventListener('load', function () {
   <div class="wrap site-footer__widgets">
     <section class="footer-widget" aria-label="Facebook">
       <h2 class="footer-widget__title">Like Us On Facebook</h2>
-      <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&tabs=timeline&width=275&height=370&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId" width="275" height="370" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" loading="lazy" title="Avery Acupuncture on Facebook"></iframe>
+      <div class="fb-slot" data-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FAvery-Acupuncture-Natural-Medicine-128162903891118%2F%3Ffref%3Dnf&amp;tabs=timeline&amp;width=275&amp;height=370&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=false&amp;appId" data-title="Avery Acupuncture on Facebook"></div>
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <script src="https://www.wellness.com/js/badges/3245076/badge_160_200.js" id="script_badge_160_200_3245076" type="text/javascript"></script><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
+        <img class="wellness-badge-img" src="assets/img/wellness-badge-preview.jpg" alt="Wellness.com profile badge: 5 out of 5 stars, 51 reviews" width="160" height="176" loading="lazy" decoding="async"><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
         <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><picture><source type="image/avif" srcset="assets/img/Unknown.avif"><source type="image/webp" srcset="assets/img/Unknown.webp"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy" decoding="async"></picture></a></p>
       </div>
     </section>
     <section class="footer-widget" aria-label="Video">
       <div class="footer-widget__video">
-        <iframe src="https://www.youtube.com/embed/YAffgKRg6P0" width="100%" height="315" title="Avery Acupuncture video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <div class="embed-facade embed-facade--ytfoot" data-src="https://www.youtube.com/embed/YAffgKRg6P0?autoplay=1&amp;rel=0" data-title="Avery Acupuncture video" data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"><img class="embed-facade__img" src="https://i.ytimg.com/vi/YAffgKRg6P0/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><button type="button" class="embed-facade__btn" aria-label="Play video: Avery Acupuncture video"><span class="embed-facade__circle"><svg class="embed-facade__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button></div>
       </div>
     </section>
   </div>
@@ -146,6 +149,6 @@ window.addEventListener('load', function () {
     </ul>
   </nav>
 </footer>
-<script src="js/main.js?v=1791785497"></script>
+<script src="js/main.js?v=1791819032"></script>
 </body>
 </html>
