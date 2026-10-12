@@ -329,6 +329,56 @@ the `.fx` entrance animation no longer slides horizontally below 1200px
 bar. iOS Safari's `background-attachment: fixed` bug is neutralized below
 979px on the bamboo CTA bands.
 
+### 6e. Best-practices / accessibility triage pass (2026-10-12)
+
+Goal: raise the red Best Practices and Accessibility scores **without changing
+the look**. Method: 16 Lighthouse runs (8 pages × desktop + mobile) against the
+live URL, before and after, plus full-page screenshot diffs of all 16 renders
+against the pre-pass build. Scope discipline: anything that would alter the
+rendered pixels was left for the client instead of being quietly changed.
+
+**Fixed — no visual change:**
+
+- **`heading-order` (conditions-treated).** The six condition headings were
+  `<h3>` directly under the `<h1>` (a skipped level). They are now `<h2>`,
+  with every CSS rule that targeted the tag updated in lockstep — the shared
+  `.ct-item h3` selectors in `css/style.css` **and** the mobile overrides in
+  `css/pages/conditions-treated.css` (that file styles them at 30px below
+  860px, so it had to move with the tag or the phone layout would regress).
+  Measured after the change: identical computed boxes at 390px (38/77px heads,
+  page height 3901px) and 1280px (45px heads, 2891px) — the audit now passes
+  on both form factors and rendering is unchanged.
+
+**Measured, but not fixable from the code:**
+
+- **`errors-in-console` (every page).** The test host's DNS sinkholes
+  `googletagmanager.com` and `static.cloudflareinsights.com` (both resolve to
+  `::`), so the client's own GTM tag and Cloudflare's injected beacon "fail"
+  in Lighthouse here. Real visitors load both fine. Not a site defect.
+- **`inspector-issues` (every page).** Chrome flags cookies set by the
+  YouTube embeds. Switching the four iframes to `youtube-nocookie.com` was
+  tried and **measured to change nothing** — Playwright confirmed the player
+  renders identically, but the Cookie issue still fires against the nocookie
+  domain — so the change was reverted to keep the embeds exactly as the live
+  site has them. Only removing the embeds would clear it (deferred, see below).
+- **`deprecations`.** A Cloudflare-injected challenge script, not site code;
+  it appears sporadically in the runs.
+
+**Deferred to the client — each of these changes the look, so nothing was
+changed silently:**
+
+1. **`color-contrast` (every page).** The elements and their problems are
+   listed in the run reports; the recurring ones are white-on-brand-green
+   text (`--green` `#6b9d47`, 3.21:1), the green nav links, and the orange
+   "5.0 ★★★★★" review score (`#f57c00`). Fixing means repainting — one token
+   decision (e.g. `--green: #557d2f` for AA), already flagged in §6c.
+2. **Footer logo aspect ratio.** The logo renders in a forced 180×190px box
+   while the image is natively 301×270 — slightly squished. Fixing the CSS
+   box removes the distortion but changes the logo's rendered shape.
+3. **`veronica.jpg` is undersized for today's phones.** The source photo is
+   only 450px wide; mobile displays want ~618px. A larger source file from the
+   client would fix it — upscaling the existing one would only fake it.
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link

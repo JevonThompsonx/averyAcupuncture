@@ -790,9 +790,9 @@ strong, b { font-weight: 700; }
 
 /* ---------- conditions-treated ---------- */
 .ct-sec { padding: 65px 0 66px; }
-.ct-item h3 { text-align: left; font-size: 41.14px; line-height: 45.25px; margin: 51.4px 0 8.2px; }
+.ct-item h2 { text-align: left; font-size: 41.14px; line-height: 45.25px; margin: 51.4px 0 8.2px; }
 /* Live site hand-tunes the right column so its rules sit level with the left. */
-.ct-item--gastro h3 { margin-top: 112px; }
+.ct-item--gastro h2 { margin-top: 112px; }
 .ct-item--gastro p { margin-bottom: 80px; }
 .ct-item .x-hr { margin: 23.6px 0; }
 .ct-item p { font-size: 18px; line-height: 30.6px; color: var(--body); margin: 0; }

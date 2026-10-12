@@ -22,21 +22,21 @@
   /* 41px headings dwarf a ~272px phone column. Scale to 30px (still larger
      than the 18px body copy for the site's older readers) and tighten the
      51px top margin an individual heading no longer needs when stacked. */
-  .ct-item h3 {
+  .ct-item h2 {
     font-size: 30px;
     line-height: 1.28;
     margin: 24px 0 8px;
   }
   /* The first heading of each (now full-width) column needs no top gap —
      the section padding already opens the block. */
-  .ct-item:first-child h3 { margin-top: 0; }
+  .ct-item:first-child h2 { margin-top: 0; }
   /* Slightly tighter rule-to-copy spacing than the desktop 23.6px. */
   .ct-item .x-hr { margin: 14px 0; }
 
   /* These two rules existed only to line the right column up with the left
      on desktop. Stacked, they left a 112px hole above the GI heading and an
      80px gap after it; reset them to the normal item rhythm. */
-  .ct-item--gastro h3 { margin-top: 24px; }
+  .ct-item--gastro h2 { margin-top: 24px; }
   .ct-item--gastro p { margin-bottom: 0; }
 
   /* Invisible 100px spacer the desktop grid kept at the foot of its left

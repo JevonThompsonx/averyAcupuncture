@@ -709,7 +709,7 @@ def page_conditions():
     def item(h, p):
         return f"""
       <div class="ct-item fx">
-        <h3>{esc(h)}</h3>
+        <h2>{esc(h)}</h2>
         <hr class="x-hr x-hr--light">
         <p>{localize(esc(p))}</p>
       </div>"""
