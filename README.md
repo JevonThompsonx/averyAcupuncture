@@ -365,19 +365,39 @@ rendered pixels was left for the client instead of being quietly changed.
   it appears sporadically in the runs.
 
 **Deferred to the client — each of these changes the look, so nothing was
-changed silently:**
+changed silently:** (client reviewed 2026-10-12 and approved the first two,
+which are now **fixed** — see the 2026-10-12 palette pass below)
 
-1. **`color-contrast` (every page).** The elements and their problems are
-   listed in the run reports; the recurring ones are white-on-brand-green
-   text (`--green` `#6b9d47`, 3.21:1), the green nav links, and the orange
-   "5.0 ★★★★★" review score (`#f57c00`). Fixing means repainting — one token
-   decision (e.g. `--green: #557d2f` for AA), already flagged in §6c.
-2. **Footer logo aspect ratio.** The logo renders in a forced 180×190px box
-   while the image is natively 301×270 — slightly squished. Fixing the CSS
-   box removes the distortion but changes the logo's rendered shape.
-3. **`veronica.jpg` is undersized for today's phones.** The source photo is
-   only 450px wide; mobile displays want ~618px. A larger source file from the
-   client would fix it — upscaling the existing one would only fake it.
+1. ~~**`color-contrast` (every page).**~~ **FIXED (client-approved palette
+   change).** The offending tokens were darkened so every flagged element
+   clears AA 4.5:1: `--green #6b9d47 → #557d2f` (white-on-green bands, BOOK
+   ONLINE, buttons, and the green headings themselves were 2.9–3.2:1),
+   `--nav-hover #8e8761 → #7a7448` (the current-page nav link was 3.6:1),
+   sub-menu links → `--green-ink`, review score `#f57c00 → #b85000`,
+   "powered by" `#777 → #6f6f6f`.
+2. ~~**Footer logo aspect ratio.**~~ **FIXED (client-approved).** The logo
+   renders in a forced 180×190px box while the image is natively 301×270 —
+   slightly squished. The box is now `height: auto` (and the `<img>`
+   width/height attributes match), so the logo renders at its natural
+   ~180×161px on all 8 pages.
+3. **`veronica.jpg` is undersized for today's phones.** Still open: the source
+   photo is only 450px wide; mobile displays want ~618px. A larger source
+   file from the client would fix it — upscaling the existing one would only
+   fake it.
+
+**Result after both approved fixes (16 Lighthouse runs, live URL):**
+
+| Suite | Before | After |
+|---|---|---|
+| Accessibility | 95–97 | **100 on all 8 pages** (desktop + mobile) |
+| Best Practices | 69–96 | **92 on all pages** where not environmental |
+
+The residual Best Practices failures are all outside the code: the console
+errors (this host's DNS sinkhole), the YouTube cookie warnings (client chose
+to keep the embeds), and a Cloudflare-injected script's deprecation warning.
+One run of `mob-index` scored BP 73 because that Cloudflare script
+(`cdn-cgi/challenge-platform/...jsd/main.js`) appeared in that single run —
+it is not site code and cannot be removed from here.
 
 ## 7. What changed vs. the live site
 

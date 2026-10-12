@@ -6,15 +6,22 @@
    review names #0073e6 · olive #b5ba34/#b7b733
    Type: EB Garamond (headings) · Open Sans (body) · Garamond (nav)
    Container: 85% width, max 1280px
+   --------------------------------------------------------------------------
+   2026-10-12 accessibility pass (client-approved palette change): the
+   original greens were darkened so text-on-green and green text on white
+   clear WCAG AA 4.5:1 — --green #6b9d47 → #557d2f, --nav-hover #8e8761 →
+   #7a7448, sub-menu links → --green-ink; review score #f57c00 → #b85000;
+   "powered by" #777 → #6f6f6f. Footer logo box height is now auto so the
+   301×270 image renders at its natural aspect (was squished 180×190).
    ========================================================================== */
 
 :root {
-  --green: #6b9d47;
+  --green: #557d2f;
   --green-soft: #8abe3c;
   /* AA-compliant ink variant of the brand green for text on white
      (4.82:1 — the lighter shades fail WCAG at any size). */
   --green-ink: #557d2f;
-  --nav-hover: #8e8761;
+  --nav-hover: #7a7448;
   --orange: #e17d4a;
   --body: #7a6d4a;
   --ink: #000000;
@@ -260,7 +267,7 @@ strong, b { font-weight: 700; }
   font-size: 0.875rem;
   letter-spacing: 0.105em;
   text-transform: uppercase;
-  color: var(--green-soft);
+  color: var(--green-ink);
   white-space: nowrap;
 }
 
@@ -412,7 +419,7 @@ strong, b { font-weight: 700; }
 .grw__summary { font-size: 0.9rem; color: #333; }
 .grw__summary p { margin-bottom: 0.35em; }
 .grw__biz { font-weight: 600; color: #333; font-size: 0.95rem; }
-.grw__score { font-size: 0.95rem; color: #f57c00; }
+.grw__score { font-size: 0.95rem; color: #b85000; }
 .grw__score .stars { font-size: 1.1rem; }
 .stars { color: var(--gstar); letter-spacing: 0.1em; }
 .grw__based { color: #555; }
@@ -420,7 +427,7 @@ strong, b { font-weight: 700; }
   display: flex;
   align-items: center;
   gap: 0.3em;
-  color: #777;
+  color: #6f6f6f;
   font-size: 0.85rem;
 }
 .grw__write {
@@ -1058,7 +1065,7 @@ strong, b { font-weight: 700; }
   color: var(--body);
 }
 .site-footer { padding-bottom: 3.414rem; }
-.footer-logo { width: 180px; height: 190px; margin: 0 auto; }
+.footer-logo { width: 180px; height: auto; margin: 0 auto; }
 /* Measured live: spacer/copyright paragraphs carry no top margin and a
    13.13px bottom margin. */
 .site-footer__bottom p { margin: 0 0 13.13px; }

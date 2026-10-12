@@ -237,7 +237,7 @@ def footer(variant="wide"):
     </section>
   </div>
   <div class="{'wrap-news' if variant == 'news' else 'wrap'} site-footer__bottom">
-    {img("avery-logo-black-wcolor2.png", "Avery Acupuncture", 180, 190, cls="footer-logo")}    <p>&nbsp;</p>
+    {img("avery-logo-black-wcolor2.png", "Avery Acupuncture", 180, 161, cls="footer-logo")}    <p>&nbsp;</p>
     <!-- NOTE: "Acupunture" (missing c) is the live site's own spelling,
          preserved verbatim. Jolly Creative Agency was the previous
          developer. Keep or remove this credit per the client's contract. -->
