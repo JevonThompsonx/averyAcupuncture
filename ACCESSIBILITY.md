@@ -71,15 +71,15 @@ Legend: **Sup** = Supports · **Part** = Partially Supports · **N/A** = Not App
 
 | Criterion | Level | Status | Evidence / remarks |
 |---|---|---|---|
-| 2.1.1 Keyboard | A | **Sup** | Manual tab-walk of every page (48/26/27/36/41/27/26/25 stops): every interactive element is reachable and operable — skip link, nav, dropdown parents, mobile toggle, carousel arrows and dots, FAQ accordion, search, footer links. |
+| 2.1.1 Keyboard | A | **Sup** | Manual tab-walk of every page (48/26/27/36/41/27/26/25 stops): every interactive element is reachable and operable — the client's own UserWay toggle (injected by that third-party widget, one stop, and out of this codebase's control), then the skip link, nav, dropdown parents, mobile toggle, carousel arrows and dots, FAQ accordion, search, footer links. |
 | 2.1.2 No Keyboard Trap | A | **Sup** | Tab-walk enters and exits the YouTube and Google Maps iframes normally; Escape closes the mobile menu (added 2026-10-12); nothing retains focus. |
 | 2.1.4 Character Key Shortcuts | A | **N/A** | No single-character shortcuts are implemented. |
 | 2.2.1 Timing Adjustable | A | **N/A** | No time limits. |
 | 2.2.2 Pause, Stop, Hide | A | **Sup** | The only motion is a one-shot 750ms fade-and-rise entrance per section, disabled entirely under `prefers-reduced-motion`; nothing loops, auto-updates, or blinks. |
 | 2.3.1 Three Flashes or Below Threshold | A | **Sup** | No flashing content. |
-| 2.4.1 Bypass Blocks | A | **Sup** | Working "Skip to main content" link as the first focusable element on every page. |
+| 2.4.1 Bypass Blocks | A | **Sup** | Working "Skip to main content" link, the first focusable element *of this site* on every page (the only stop ahead of it is the client's own UserWay widget toggle, which injects itself at the top of the document and is not part of this code). It sits inside the `<header>` banner landmark so every link on the page is landmark-wrapped — a proxy/CDN that injects an anchor ahead of the page would otherwise make a body-level skip link an axe `region` finding, which is exactly what Cloudflare did until 2026-10-12 (README §6i). |
 | 2.4.2 Page Titled | A | **Sup** | Unique, descriptive `<title>` per page (axe: 0 violations). |
-| 2.4.3 Focus Order | A | **Sup** | Tab order is skip-link → header/nav → main content → footer, matching the visual layout (verified in the keyboard walk). |
+| 2.4.3 Focus Order | A | **Sup** | Tab order is skip-link → header/nav → main content → footer, matching the visual layout (verified in the keyboard walk). The single exception is the client's UserWay widget, which inserts its own toggle ahead of the page content; it is a third-party component the account owner controls. |
 | 2.4.4 Link Purpose (In Context) | A | **Sup** | All links have discernible text; external links carry `rel="noopener"` (axe link-name: 0 violations). |
 | 2.4.5 Multiple Ways | AA | **Sup** | Persistent nav menu, footer menu, `/sitemap.xml` (published, linked from robots.txt), and search on the news page. |
 | 2.4.6 Headings and Labels | AA | **Sup** | Headings describe their sections; labels are descriptive. |

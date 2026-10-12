@@ -507,6 +507,57 @@ for normal visitors; and Cloudflare's edge-injected
 not by this site, and can be avoided by turning off JavaScript Detections
 in the Cloudflare dashboard (Security → Bots) if the client wants.
 
+### 6i. Landmark hygiene + embed-preview weight (2026-10-12)
+
+Two first-party fixes found by re-running the live battery after the
+performance pass. Both verified with full-page screenshot diffs of all 16
+page/viewport renders against the previous build — including the focused
+skip-link state — so the rendered pixels are unchanged.
+
+**axe `region` violation that only fired on the live site.** Running the
+full axe rule set against `avery.jsquaredadventures.com` flagged `.skip`
+("Skip to main content") on all 16 runs, while the identical files served
+locally were clean. Root cause, proved rather than guessed: **Cloudflare
+injects a hidden `<a href="https://…/cdn-cgi/content?id=…">` as the first
+child of `<body>` on every response.** axe's `region` check exempts the
+*first link on the page* from the "content must be inside a landmark"
+requirement, so that injected anchor took the exemption away from our own
+skip link — a visible link sitting outside any landmark. Locally (no proxy
+in front) the skip link *is* the first link, so the same markup passes:
+exactly the local-passes / live-fails split that had stalled the previous
+session. The fix is to move the skip link inside `<header>` (the banner
+landmark), which also hardens the page against any proxy or CDN that wants
+to put something ahead of it. Look unchanged — `.skip` is
+`position:absolute`, and `.site-header` is `position:relative` at y=0 full
+width, so its box is identical (measured: rect 16,16,207×50.4 before and
+after, `:focus-visible` intact, still the first focusable element).
+
+**Click-to-load previews were shipping full-size captures.** The Google
+Maps facade sent the 1162×451 JPEG (94 KB) to phones; the Wellness.com
+badge sent an 18.9 KB JPEG. Both now go through `build.py`'s responsive
+image helper, and `build_images.py` gained a `PREVIEWS` policy for them
+(screenshots containing fine text encode harder, and the map never emits a
+400w derivative — its street labels soften visibly when downscaled, so a
+DPR-1 phone gets the 800w source supersampled instead). Desktop still
+pulls the original 1162w JPEG, which is why desktop renders are
+byte-identical. Measured (Lighthouse 13.5 mobile, local, before → after):
+image-delivery waste **82 KiB → 25 KiB**, page weight **417 → 362 KiB**,
+FCP **1.4 → 1.2 s**, TBT **40 → 30 ms**; performance stays **0.99**.
+
+Live state after both fixes: **axe-core full rule set, 0 violations on all
+16 page/viewport combinations**; Lighthouse accessibility **100**, SEO
+**100** on all pages. Everything still failing on the live run is
+environmental or third-party (`errors-in-console` from this host's DNS
+sinkhole of `googletagmanager.com`/`static.cloudflareinsights.com`,
+`deprecations`/`unused-javascript`/`legacy-javascript` from the UserWay
+widget, `bf-cache`'s "unload handler in a sub frame", YouTube thumbnail
+cache lifetimes) or was deliberately left alone: the hero keeps its 800w
+AVIF (14 KiB of Lighthouse "waste" is its DPR-1 heuristic; downgrading it
+would soften the LCP element), and the three stylesheets stay as files
+rather than being inlined (they are cached for a year, while every HTML
+document is `no-cache` — inlining would re-send all 34 KB of CSS on every
+page navigation to save one round trip).
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link
