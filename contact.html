@@ -40,8 +40,8 @@
 "sameAs":["https://www.facebook.com/Avery-Acupuncture-Natural-Medicine-128162903891118/",
 "https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles"]}
 </script>
-<link rel="stylesheet" href="css/style.min.css?v=1791820177">
-<link rel="stylesheet" href="css/pages/contact.min.css?v=1791817882">
+<link rel="stylesheet" href="css/style.min.css?v=1791820247">
+<link rel="stylesheet" href="css/pages/contact.min.css?v=1791820247">
 <!-- Google Analytics (client's existing GA4 measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
@@ -58,9 +58,19 @@ window.addEventListener('load', function () {
 </script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to main content</a>
 
 <header class="site-header">
+  <!-- Skip link lives INSIDE the header (banner landmark), not as a body
+       child: a page-level link outside a landmark is flagged by axe's `region`
+       rule the moment a proxy/CDN injects even one hidden anchor ahead of it
+       (Cloudflare injects one on every response, which made the rule fire on
+       the live site while it passed locally). Inside the banner it is
+       landmark-wrapped on both local and proxied responses, and it stays the
+       first focusable element in the page. Pixel-verified identical: `.skip`
+       is position:absolute, so the header (position:relative, y=0, full
+       width) gives it the same box it had against the initial containing
+       block. -->
+  <a class="skip" href="#main">Skip to main content</a>
   <div class="topbar">
     <div class="wrap topbar__inner">
       <p class="nav-phone"><a href="tel:805-400-9723">(805) 400-9723</a> <a class="nav-book-online" href="https://patient.unifiedpractice.com/avery-acupuncture-natural-medicine-inc" target="_blank" rel="noopener">BOOK ONLINE NOW</a></p>
@@ -107,7 +117,7 @@ window.addEventListener('load', function () {
   </div>
 </section>
 <section class="cp-map">
-  <div class="wrap-max"><div class="embed-facade embed-facade--mapcp" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3242.823179779206!2d-120.69375458445003!3d35.63208534027264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80ecc55e6350d303%3A0x7430f658ca4bd501!2s1704%20Spring%20St%20%23202%2C%20Paso%20Robles%2C%20CA%2093446%2C%20USA!5e0!3m2!1sen!2sin!4v1577686125064!5m2!1sen!2sin" data-title="Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"><img class="embed-facade__img" src="assets/img/map-embed-preview.jpg" alt="" width="1162" height="451" loading="lazy" decoding="async"><button type="button" class="embed-facade__btn" aria-label="Show interactive map: Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"><span class="embed-facade__circle"><svg class="embed-facade__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button></div></div>
+  <div class="wrap-max"><div class="embed-facade embed-facade--mapcp" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3242.823179779206!2d-120.69375458445003!3d35.63208534027264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80ecc55e6350d303%3A0x7430f658ca4bd501!2s1704%20Spring%20St%20%23202%2C%20Paso%20Robles%2C%20CA%2093446%2C%20USA!5e0!3m2!1sen!2sin!4v1577686125064!5m2!1sen!2sin" data-title="Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"><picture><source type="image/avif" srcset="assets/img/map-embed-preview-800w.avif 800w, assets/img/map-embed-preview.jpg 1162w" sizes="(max-width: 860px) 100vw, 1162px"><source type="image/webp" srcset="assets/img/map-embed-preview-800w.webp 800w, assets/img/map-embed-preview.jpg 1162w" sizes="(max-width: 860px) 100vw, 1162px"><img src="assets/img/map-embed-preview.jpg" srcset="assets/img/map-embed-preview-800w.jpg 800w, assets/img/map-embed-preview.jpg 1162w" sizes="(max-width: 860px) 100vw, 1162px" class="embed-facade__img" alt="" width="1162" height="451" loading="lazy" decoding="async"></picture><button type="button" class="embed-facade__btn" aria-label="Show interactive map: Map of Avery Acupuncture, 1704 Spring Street Suite 202, Paso Robles, CA"><span class="embed-facade__circle"><svg class="embed-facade__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button></div></div>
 </section>
 <section class="cp-sec">
   <div class="wrap-1000">
@@ -169,7 +179,7 @@ window.addEventListener('load', function () {
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <img class="wellness-badge-img" src="assets/img/wellness-badge-preview.jpg" alt="Wellness.com profile badge: 5 out of 5 stars, 51 reviews" width="160" height="176" loading="lazy" decoding="async"><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
+        <picture><source type="image/avif" srcset="assets/img/wellness-badge-preview.avif"><source type="image/webp" srcset="assets/img/wellness-badge-preview.webp"><img src="assets/img/wellness-badge-preview.jpg" class="wellness-badge-img" alt="Wellness.com profile badge: 5 out of 5 stars, 51 reviews" width="160" height="176" loading="lazy" decoding="async"></picture><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
         <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener"><picture><source type="image/avif" srcset="assets/img/Unknown.avif"><source type="image/webp" srcset="assets/img/Unknown.webp"><img src="assets/img/Unknown.png" alt="People love us on Yelp" width="100" height="100" loading="lazy" decoding="async"></picture></a></p>
       </div>
@@ -193,6 +203,6 @@ window.addEventListener('load', function () {
     </ul>
   </nav>
 </footer>
-<script src="js/main.js?v=1791819032"></script>
+<script src="js/main.js?v=1791820247"></script>
 </body>
 </html>

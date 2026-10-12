@@ -33,7 +33,8 @@ PLAY_ICON = ('<svg class="embed-facade__icon" viewBox="0 0 24 24" aria-hidden="t
              'focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>')
 
 
-def embed_facade(variant, src, title, label, preview=None, pw=None, ph=None, allow=None):
+def embed_facade(variant, src, title, label, preview=None, pw=None, ph=None, allow=None,
+                 sizes="(max-width: 860px) 100vw, 1162px"):
     """Click-to-load embed facade. The heavy third-party player (YouTube's
     ~1.6 MB of JS, the Google Maps API) is fetched only when the visitor
     asks for it; until then the frame shows the video's YouTube thumbnail
@@ -44,12 +45,24 @@ def embed_facade(variant, src, title, label, preview=None, pw=None, ph=None, all
     attrs = f' data-src="{esc(src)}" data-title="{esc(title)}"'
     if allow:
         attrs += f' data-allow="{esc(allow)}"'
-    img = ''
+    # NB: not named `img` — that would shadow the img() helper used below.
+    preview_html = ''
     if preview:
-        dim = f' width="{pw}" height="{ph}"' if pw and ph else ''
-        img = (f'<img class="embed-facade__img" src="{esc(preview)}" alt=""{dim} '
-               'loading="lazy" decoding="async">')
-    return (f'<div class="embed-facade embed-facade--{variant}"{attrs}>{img}'
+        if preview.startswith("assets/"):
+            # Our own preview screenshot: route it through the responsive
+            # image helper so phones pull the width-appropriate AVIF/WebP
+            # instead of the 1162px original (94 KB -> 17 KB on a 390px
+            # viewport). Remote previews (YouTube thumbnails) have no local
+            # variants and keep the plain <img>.
+            # img() takes a bare assets/img/ filename (it adds the prefix).
+            preview_html = img(preview[len("assets/img/"):], "", w=pw, h=ph,
+                               cls="embed-facade__img", decorative=True,
+                               sizes=sizes)
+        else:
+            dim = f' width="{pw}" height="{ph}"' if pw and ph else ''
+            preview_html = (f'<img class="embed-facade__img" src="{esc(preview)}" alt=""{dim} '
+                            'loading="lazy" decoding="async">')
+    return (f'<div class="embed-facade embed-facade--{variant}"{attrs}>{preview_html}'
             f'<button type="button" class="embed-facade__btn" aria-label="{esc(label)}">'
             f'<span class="embed-facade__circle">{PLAY_ICON}</span></button></div>')
 
@@ -237,6 +250,17 @@ def header(active, variant="wide"):
     wrap = "wrap-news" if variant == "news" else "wrap"
     return f"""
 <header class="site-header{' site-header--news' if variant == 'news' else ''}">
+  <!-- Skip link lives INSIDE the header (banner landmark), not as a body
+       child: a page-level link outside a landmark is flagged by axe's `region`
+       rule the moment a proxy/CDN injects even one hidden anchor ahead of it
+       (Cloudflare injects one on every response, which made the rule fire on
+       the live site while it passed locally). Inside the banner it is
+       landmark-wrapped on both local and proxied responses, and it stays the
+       first focusable element in the page. Pixel-verified identical: `.skip`
+       is position:absolute, so the header (position:relative, y=0, full
+       width) gives it the same box it had against the initial containing
+       block. -->
+  <a class="skip" href="#main">Skip to main content</a>
   <div class="topbar">
     <div class="{wrap} topbar__inner">
       <p class="nav-phone"><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> <a class="nav-book-online" href="{BOOKING}" target="_blank" rel="noopener">BOOK ONLINE NOW</a></p>
@@ -271,7 +295,8 @@ def footer(variant="wide"):
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
         <center>
-        <img class="wellness-badge-img" src="assets/img/wellness-badge-preview.jpg" alt="Wellness.com profile badge: 5 out of 5 stars, 51 reviews" width="160" height="176" loading="lazy" decoding="async"><a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
+        {img("wellness-badge-preview.jpg", "Wellness.com profile badge: 5 out of 5 stars, "
+              "51 reviews", 160, 176, cls="wellness-badge-img")}<a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
         </center>
         <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener">{img("Unknown.png", "People love us on Yelp", 100, 100)}</a></p>
       </div>
@@ -406,7 +431,6 @@ window.addEventListener('load', function () {{
 </script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to main content</a>
 {header(active) if name != 'news' else ''}
 {body if name == "news" else f"<main id=\"main\">\n{body}\n</main>\n" + footer()}
 <script src="{asset_ver('js/main.js')}"></script>

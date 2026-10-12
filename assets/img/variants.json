@@ -175,6 +175,15 @@
   ],
   "widths": []
  },
+ "map-embed-preview.jpg": {
+  "natural": [
+   1162,
+   451
+  ],
+  "widths": [
+   800
+  ]
+ },
  "proofs-0024.jpg": {
   "natural": [
    410,
@@ -234,5 +243,12 @@
   "widths": [
    400
   ]
+ },
+ "wellness-badge-preview.jpg": {
+  "natural": [
+   320,
+   352
+  ],
+  "widths": []
  }
 }

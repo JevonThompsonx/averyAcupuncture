@@ -27,6 +27,17 @@ CANDIDATES = [400, 800, 1200]
 # Files that must not be touched/replaced (variants of themselves).
 SKIP_PREFIX = ("fav-icon",)
 
+# Screenshots of third-party widgets (the click-to-load facades) contain fine
+# text — map street labels, badge copy — where a low-quality encode is visible.
+# They encode harder and never emit a width below 800px: a phone at DPR 1 then
+# gets an 800px source supersampled down to its ~390px box, which is sharper
+# than a browser downscale of a 400px derivative and identical to what it saw
+# before this optimisation (the original 1162px JPEG).
+PREVIEWS = {
+    "map-embed-preview.jpg":    {"min_width": 800, "avif": 60},
+    "wellness-badge-preview.jpg": {"avif": 60},
+}
+
 try:
     from PIL import Image
     Image.MAX_IMAGE_PIXELS = None
@@ -73,6 +84,8 @@ def main():
                 im = im.convert("RGB") if im.mode not in ("RGB", "RGBA") else im
                 nat_w, nat_h = im.size
                 widths = variants_for(nat_w)
+                pol = PREVIEWS.get(name, {})
+                widths = [w for w in widths if w >= pol.get("min_width", 0)]
                 entry = {"natural": [nat_w, nat_h], "widths": []}
                 for w in widths:
                     outs = []
@@ -86,6 +99,8 @@ def main():
                                 h = round(base.height * w / base.width)
                                 base = base.resize((w, h), Image.LANCZOS)
                                 q = HARDER_Q if name.lower().startswith("bamboo") else None
+                                if pol.get(fmt):
+                                    q = {**(q or {}), fmt: pol[fmt]}
                                 encode(base, out, fmt, q)
                     entry["widths"].append(w)
                 # whole-image single-size variants (no width in the name)
@@ -97,7 +112,8 @@ def main():
                         if force or not os.path.exists(out):
                             with Image.open(src) as base:
                                 base = base.convert("RGBA") if base.mode in ("RGBA", "LA", "P") else base.convert("RGB")
-                                encode(base, out, fmt)
+                                q = {fmt: pol[fmt]} if pol.get(fmt) else None
+                                encode(base, out, fmt, q)
                 manifest[name] = entry
         except Exception as e:  # a broken file must not break the build
             print(f"  SKIP {name}: {e}")
