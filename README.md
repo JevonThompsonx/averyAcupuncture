@@ -440,6 +440,28 @@ combinations = **0 violations**; Lighthouse **accessibility 100 on all 8
 pages** (was 95–97); scripted keyboard walks, 200%/400% zoom reflow, and
 text-spacing override tests all pass; `verify.py` 159 checks green.
 
+### 6g. Live-site effects port (2026-10-12)
+
+The original site is a WordPress/X-theme build whose effects were audited
+directly (its theme JS and its sections' `data-x-params`). It ships three
+effects; this recreation already had two (entrance fades, and
+`background-attachment: fixed` on the bamboo CTA bands). The missing one was
+ported:
+
+- **Hero photo parallax (index).** The live site drifts its hero background at
+  0.1× the scroll speed (its theme's `rect.top × 0.1` background-position
+  formula). Reproduced with `object-position` on the *same real `<img>`* — the
+  LCP-discovery benefit of `fetchpriority=high` is kept, and the cover-fit
+  overflow absorbs the ±46px drift (no edges, no layout work). Same conditions
+  as the original: inactive on touch input and under
+  `prefers-reduced-motion`; rAF-gated and fully inert once the hero scrolls
+  past. Measured: TBT unchanged (22–73ms across repeated runs), CLS 0, and the
+  rest state of all 16 page/viewport screenshots is **pixel-identical** to the
+  pre-effect build; scrolled captures show the expected drift.
+- **Review-card hover elevation** (the Google-reviews widget's card lift): a
+  shadow/border-only transition — no transform, so the scroll-snap carousel's
+  behaviour is untouched; disabled under `prefers-reduced-motion`.
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link

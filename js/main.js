@@ -142,4 +142,38 @@
     setTimeout(titleBadgeFrames, 1500);
     setTimeout(titleBadgeFrames, 4000);
   });
+
+  // Hero photo parallax, ported from the live site's X theme: the hero's
+  // background drifted at 0.1x the scroll speed (their background-position
+  // formula, rect.top * 0.1). Reproduced with object-position on the same
+  // <img> (keeping the LCP-discovery win of the real image) — the cover-fit
+  // overflow absorbs the drift, so no edge is ever exposed and the crop at
+  // rest is pixel-unchanged. rAF-gated, and completely inert once the hero
+  // has scrolled past, on touch input, or under prefers-reduced-motion —
+  // exactly the cases where the old site also dropped the effect.
+  var heroImg = document.querySelector(".hero__img");
+  if (heroImg) {
+    var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var calmMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (finePointer && !calmMotion) {
+      var hero = heroImg.closest(".hero");
+      var restTop = hero.getBoundingClientRect().top + window.scrollY;
+      var ticking = false;
+      var drift = function () {
+        ticking = false;
+        var r = hero.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        var y = (r.top - restTop) * 0.1;
+        if (y < -46) y = -46;
+        if (y > 0) y = 0;
+        heroImg.style.objectPosition = "50% calc(50% + " + y.toFixed(1) + "px)";
+      };
+      var onScroll = function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(drift); }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      drift();
+    }
+  }
 })();

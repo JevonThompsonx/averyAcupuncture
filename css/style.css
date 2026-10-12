@@ -300,7 +300,11 @@ strong, b { font-weight: 700; }
 /* The hero photo is a real <img> (fetchpriority=high, responsive
    AVIF/WebP) so the browser discovers it during initial parse — it used to
    be a CSS background, which delayed LCP. It covers the section exactly
-   like the old background did (object-fit: cover). */
+   like the old background did (object-fit: cover). The live site's parallax
+   moved the background-position on scroll; that is reproduced with
+   object-position on this img (js/main.js) — the cover-fit overflow absorbs
+   the drift, so no edges are ever exposed and the crop at rest is
+   unchanged. */
 .hero__img {
   position: absolute;
   inset: 0;
@@ -468,6 +472,16 @@ strong, b { font-weight: 700; }
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
+  /* The live widget's cards lift on hover — a shadow/border-only transition
+     (no transform) so the scroll-snap carousel is unaffected. */
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.grw__card:hover {
+  border-color: #dcdcdc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+}
+@media (prefers-reduced-motion: reduce) {
+  .grw__card { transition: none; }
 }
 .grw__g {
   position: absolute;
