@@ -364,7 +364,7 @@ def hero():
     # Hero image is a real <img> (fetchpriority=high) instead of a CSS
     # background: the browser discovers it during initial parse (no LCP
     # discovery delay) and gets responsive AVIF/WebP derivatives.
-    hero_img = img("Bamboo.jpg", "", eager=True, decorative=True, sizes="100vw", cls="hero__img")
+    hero_img = img("Bamboo-hero.jpg", "", eager=True, decorative=True, sizes="100vw", cls="hero__img")
     return f"""
 <section class="hero" id="top">
   {hero_img}
@@ -431,12 +431,12 @@ def reviews_section():
         <p><a class="grw__write" href="https://search.google.com/local/writereview?placeid=ChIJuRLeDkPF7IARdquigwOGvhE" target="_blank" rel="noopener">review us on {img("grw-g-logo.png", "Google", 16, 16)}</a></p>
       </div>
       <div class="grw__track">
-        <button class="grw__arrow grw__prev" type="button" aria-label="Previous reviews">&lsaquo;</button>
+        <button class="grw__arrow grw__prev" type="button" aria-label="Previous reviews"><span aria-hidden="true">&lsaquo;</span></button>
         <div class="grw__slider">
 {''.join(cards)}
         </div>
-        <button class="grw__arrow grw__next" type="button" aria-label="Next reviews">&rsaquo;</button>
-        <div class="grw__dots" aria-label="Review pages">
+        <button class="grw__arrow grw__next" type="button" aria-label="Next reviews"><span aria-hidden="true">&rsaquo;</span></button>
+        <div class="grw__dots" role="group" aria-label="Review pages">
           <button class="grw__dot is-active" type="button" data-page="0" aria-label="Reviews page 1"></button>
           <button class="grw__dot" type="button" data-page="1" aria-label="Reviews page 2"></button>
           <button class="grw__dot" type="button" data-page="2" aria-label="Reviews page 3"></button>
@@ -491,7 +491,7 @@ def band(title, height):
     a real <img> (like the hero) so the browser discovers it during initial
     parse — a CSS background made Lighthouse's lcp-discovery audit fail on
     every inner page."""
-    band_img = img("Bamboo.jpg", "", eager=True, decorative=True, sizes="100vw", cls="page-band__img")
+    band_img = img("Bamboo-hero.jpg", "", eager=True, decorative=True, sizes="100vw", cls="page-band__img")
     return f"""
 <section class="page-band" style="height:{height}px">
   {band_img}
@@ -628,10 +628,10 @@ def page_about_treatment():
 <div class="at-imgrow">
   <div class="wrap-max x-row x-row--videos">
     <div class="x-video fx fx--l">
-      <iframe src="https://www.youtube.com/embed/NODHaSuXo5c" title="Avery Acupuncture treatment video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <iframe src="https://www.youtube.com/embed/NODHaSuXo5c" title="Avery Acupuncture treatment video, April 4 2024 (first of two)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
     </div>
     <div class="x-video fx fx--r">
-      <iframe src="https://www.youtube.com/embed/NjkSy0s9hz0" title="Avery Acupuncture treatment video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <iframe src="https://www.youtube.com/embed/NjkSy0s9hz0" title="Avery Acupuncture treatment video, April 4 2024 (second of two)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
 </div>
@@ -759,6 +759,25 @@ def page_contact():
 </section>
 <section class="cp-map">
   <div class="wrap-max">{MAP_IFRAME.replace('width="100%"', 'width="1161"')}</div>
+</section>
+<section class="cp-sec">
+  <div class="wrap-1000">
+    <h2 class="x-h2">Accessibility</h2>
+    <div class="x-text">
+      <p>Avery Acupuncture is committed to making this website usable by
+      everyone &mdash; including our older patients and people who use assistive
+      technology such as screen readers, screen magnification, or keyboard-only
+      navigation.</p>
+      <p>This site is built and tested to meet the Web Content Accessibility
+      Guidelines (WCAG) 2.1 Level AA &mdash; the standard referenced by the U.S.
+      Department of Justice and California accessibility law &mdash; and it is
+      re-checked whenever anything on it changes.</p>
+      <p>If any part of this site is hard for you to use, please tell us. Call
+      <a href="tel:{PHONE_TEL}">805.400.9723</a> and we will help you directly,
+      fix the problem, and confirm the fix with you. We would much rather hear
+      about a barrier than have you work around it.</p>
+    </div>
+  </div>
 </section>
 <section class="cp-faq">
   <h2 class="fx">FAQ</h2>

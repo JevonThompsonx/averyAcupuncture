@@ -15,6 +15,15 @@
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
 
+    // Escape closes the mobile menu (WCAG 2.1.2 keyboard operability)
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && nav.classList.contains("is-open")) {
+        nav.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.focus();
+      }
+    });
+
     // Close the mobile menu after tapping a link (but not a dropdown parent)
     nav.addEventListener("click", function (e) {
       var link = e.target.closest("a");

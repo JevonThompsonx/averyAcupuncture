@@ -29,7 +29,7 @@
   --olive-btn: #b7b733;
   --paper: #ffffff;
   --line: #e5e5e5;
-  --gstar: #fb8e28;
+  --gstar: #c25700;
   --gblue: #0073e6;
   --serif: "EB Garamond", Georgia, "Times New Roman", serif;
   --sans: "Open Sans", "Helvetica Neue", Arial, sans-serif;
@@ -59,8 +59,8 @@ html { scroll-behavior: smooth; }
 .skip:focus-visible { top: 1rem; color: #fff; }
 
 /* Keyboard focus indicator (never visible for mouse users). */
-a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
-  outline: 2px solid var(--green-soft);
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible, iframe:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--green);
   outline-offset: 2px;
 }
 
@@ -505,9 +505,9 @@ strong, b { font-weight: 700; }
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1px solid #ddd;
+  border: 1px solid #8a8a8a;
   background: #fff;
-  color: #777;
+  color: #6f6f6f;
   font-size: 1.3rem;
   line-height: 1;
   cursor: pointer;
@@ -539,7 +539,7 @@ strong, b { font-weight: 700; }
      none horizontally so the 24px targets never overlap (WCAG 2.5.8) */
   margin: -7.5px 0;
   background-color: transparent;
-  background-image: radial-gradient(circle at center, #d5d5d5 4.5px, transparent 4.6px);
+  background-image: radial-gradient(circle at center, #8a8a8a 4.5px, transparent 4.6px);
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;

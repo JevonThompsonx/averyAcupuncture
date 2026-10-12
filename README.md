@@ -399,6 +399,47 @@ One run of `mob-index` scored BP 73 because that Cloudflare script
 (`cdn-cgi/challenge-platform/...jsd/main.js`) appeared in that single run —
 it is not site code and cannot be removed from here.
 
+### 6f. Full accessibility conformance pass (2026-10-12)
+
+The client asked for a court-defensible accessibility posture (California),
+because the site serves an elderly population and the original site was
+reportedly not ADA-compliant. Result: **[`ACCESSIBILITY.md`](ACCESSIBILITY.md)**
+— a VPAT-style conformance report mapping all 53 WCAG 2.1 AA (+2.2 AA) success
+criteria to **Supports / Partially Supports / N/A** with the evidence for each.
+
+Summary: **52 of 53 criteria Supported**; the single exception is captions on
+two of the four embedded videos, which must be authored in the client's
+YouTube account (documented in ACCESSIBILITY.md §4.1 — the site cannot create
+caption tracks for videos it does not own).
+
+What this pass changed on the site (all verified against the pre-pass build
+with full-page pixel diffs — the changes are confined to the areas below):
+
+- **Title-band / hero photo highlights tone-mapped** (`Bamboo-hero.jpg`,
+  generated from `Bamboo.jpg`): white text over the photo measured 2.19:1
+  against the bright bamboo patches before; now **4.12:1** everywhere on the
+  rendered photo (3:1 is the bar for the large title type).
+- **Focus indicator darkened** from `--green-soft` (2.21:1) to `--green`
+  (4.82:1) so the keyboard ring meets 1.4.11 non-text contrast; the rule now
+  also covers `iframe` and `[tabindex]`.
+- **Carousel chrome darkened for 1.4.11**: arrows `#ddd→#8a8a8a` border /
+  `#777→#6f6f6f` glyph; inactive dots `#d5d5d5→#8a8a8a` (all ≥3:1).
+- **Star glyphs** `#fb8e28→#c25700` (4.51:1) in the review summary and cards.
+- **Escape closes the mobile menu** (keyboard operability, 2.1.1/2.1.2).
+- **Unique iframe titles** for the two About Treatment videos; **`role="group"`**
+  on the review pagination; **`aria-hidden`** on the carousel arrows'
+  decorative glyphs (2.5.3 / 4.1.2 hygiene).
+- **Public accessibility statement** added to the contact page with the
+  office phone number as the barrier-reporting channel.
+- Landscape note: Chrome cannot paint a parent-side focus ring around a
+  third-party iframe (the embedded players show their own) — tested and
+  documented in ACCESSIBILITY.md §4.2 rather than claimed as a pass.
+
+Verification run on 2026-10-12: axe-core full rule set on 16 page/viewport
+combinations = **0 violations**; Lighthouse **accessibility 100 on all 8
+pages** (was 95–97); scripted keyboard walks, 200%/400% zoom reflow, and
+text-spacing override tests all pass; `verify.py` 159 checks green.
+
 ## 7. What changed vs. the live site
 
 - **Added:** phone + address in the footer of every page (click-to-call); a real link
