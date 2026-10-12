@@ -34,16 +34,21 @@
     });
   }
 
-  // Review slider arrows + dots
+  // Review slider arrows + dots. Layout reads (card width, viewport
+  // width) are cached and refreshed on resize only: reading clientWidth
+  // inside the scroll handler forced a reflow on every scroll frame
+  // (Lighthouse flagged ~163 ms of forced reflow here on mobile).
   var slider = document.querySelector(".grw__slider");
   if (slider) {
-    var card = slider.querySelector(".grw__card");
-    var stepW = function () {
+    var cardW = 320, viewW = 1;
+    var measureSlider = function () {
       var c = slider.querySelector(".grw__card");
-      return c ? c.getBoundingClientRect().width + 16 : 320;
+      cardW = c ? c.getBoundingClientRect().width + 16 : 320;
+      viewW = slider.clientWidth || 1;
     };
+    measureSlider();
     var step = function (dir) {
-      slider.scrollBy({ left: dir * stepW(), behavior: "smooth" });
+      slider.scrollBy({ left: dir * cardW, behavior: "smooth" });
     };
     var prev = document.querySelector(".grw__prev");
     var next = document.querySelector(".grw__next");
@@ -52,7 +57,7 @@
     var dots = Array.prototype.slice.call(document.querySelectorAll(".grw__dot"));
     dots.forEach(function (dot) {
       dot.addEventListener("click", function () {
-        slider.scrollTo({ left: parseInt(dot.getAttribute("data-page"), 10) * slider.clientWidth, behavior: "smooth" });
+        slider.scrollTo({ left: parseInt(dot.getAttribute("data-page"), 10) * viewW, behavior: "smooth" });
       });
     });
     var ticking = false;
@@ -60,13 +65,19 @@
       if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(function () {
-        var page = Math.min(dots.length - 1, Math.round(slider.scrollLeft / slider.clientWidth));
+        var page = Math.min(dots.length - 1, Math.round(slider.scrollLeft / viewW));
         dots.forEach(function (d, i) {
           d.classList.toggle("is-active", i === page);
         });
         ticking = false;
       });
-    });
+    }, { passive: true });
+    var rzT = false;
+    window.addEventListener("resize", function () {
+      if (rzT) return;
+      rzT = true;
+      window.requestAnimationFrame(function () { measureSlider(); rzT = false; });
+    }, { passive: true });
   }
 
   // FAQ accordion (contact page): first item starts open, one at a time
@@ -110,13 +121,9 @@
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
     fades.forEach(function (el) { io.observe(el); });
-    // Anything already in view on load (or if the observer never fires)
-    window.addEventListener("load", function () {
-      fades.forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        if (r.top < window.innerHeight && r.bottom > 0) el.classList.add("is-in");
-      });
-    });
+    // No load-time getBoundingClientRect sweep: the observer fires
+    // immediately for elements already in view, and sweeping every .fx
+    // element forced a full-page layout during load for no benefit.
   } else {
     fades.forEach(function (el) { el.classList.add("is-in"); });
   }
@@ -142,25 +149,34 @@
   });
 
   // Defer below-the-fold third-party embeds (Facebook page plugin) until
-  // the footer actually scrolls into view: it costs ~390 KB of JS and an
-  // autoplaying video, but nothing is lost — it appears the moment the
-  // footer is on screen. (The Wellness.com badge is a static screenshot:
-  // its script only renders on window load, so it cannot be deferred.)
+  // the footer is actually visible AND the browser is idle after load: the
+  // plugin costs ~390 KB of JS, and a full-page screenshot pass (or a fast
+  // scroll) used to pull it into the load window via the 300px rootMargin.
+  // (The Wellness.com badge is a static screenshot: its script only renders
+  // on window load, so it cannot be deferred.)
   function deferUntilVisible(selector, activate) {
     var nodes = Array.prototype.slice.call(document.querySelectorAll(selector));
     if (!nodes.length) return;
-    if (!("IntersectionObserver" in window)) {
-      nodes.forEach(activate);
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        activate(entry.target);
-      });
-    }, { rootMargin: "300px" });
-    nodes.forEach(function (n) { io.observe(n); });
+    var start = function () {
+      if (!("IntersectionObserver" in window)) {
+        nodes.forEach(activate);
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          activate(entry.target);
+        });
+      }, { rootMargin: "0px" });
+      nodes.forEach(function (n) { io.observe(n); });
+    };
+    var idle = function () {
+      if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 4000 });
+      else setTimeout(start, 3000);
+    };
+    if (document.readyState === "complete") idle();
+    else window.addEventListener("load", idle);
   }
   deferUntilVisible(".fb-slot", function (slot) {
     var f = document.createElement("iframe");
@@ -181,22 +197,30 @@
   // formula, rect.top * 0.1). Reproduced with object-position on the same
   // <img> (keeping the LCP-discovery win of the real image) — the cover-fit
   // overflow absorbs the drift, so no edge is ever exposed and the crop at
-  // rest is pixel-unchanged. rAF-gated, and completely inert once the hero
-  // has scrolled past, on touch input, or under prefers-reduced-motion —
-  // exactly the cases where the old site also dropped the effect.
+  // rest is pixel-unchanged. The ported formula (live top minus the top at
+  // load) simplifies to -scrollY * 0.1, so scroll frames use scrollY math
+  // only and force no layout; geometry is measured once (plus on resize)
+  // just for the off-screen guard. Inert once the hero has scrolled past,
+  // on touch input, or under prefers-reduced-motion — exactly the cases
+  // where the old site also dropped the effect.
   var heroImg = document.querySelector(".hero__img");
   if (heroImg) {
     var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     var calmMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (finePointer && !calmMotion) {
       var hero = heroImg.closest(".hero");
-      var restTop = hero.getBoundingClientRect().top + window.scrollY;
+      var heroTop = 0, heroBottom = 0;
+      var measureHero = function () {
+        var r = hero.getBoundingClientRect();
+        heroTop = r.top + window.scrollY;
+        heroBottom = heroTop + r.height;
+      };
+      measureHero();
       var ticking = false;
       var drift = function () {
         ticking = false;
-        var r = hero.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > window.innerHeight) return;
-        var y = (r.top - restTop) * 0.1;
+        if (window.scrollY > heroBottom || heroTop > window.scrollY + window.innerHeight) return;
+        var y = window.scrollY * -0.1;
         if (y < -46) y = -46;
         if (y > 0) y = 0;
         heroImg.style.objectPosition = "50% calc(50% + " + y.toFixed(1) + "px)";
@@ -205,7 +229,7 @@
         if (!ticking) { ticking = true; requestAnimationFrame(drift); }
       };
       window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll, { passive: true });
+      window.addEventListener("resize", function () { measureHero(); onScroll(); }, { passive: true });
       drift();
     }
   }

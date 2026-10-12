@@ -380,6 +380,23 @@ def font_preloads():
         f'<link rel="preload" href="{p}" as="font" type="font/woff2" crossorigin>' for p in picks)
 
 
+def fonts_inline():
+    """Inline fonts.css into a <style> block: it is only @font-face rules
+    (~8.9 KB, ~2 KB gzipped) and inlining removes a render-blocking
+    stylesheet request from every page's critical path (Lighthouse flagged
+    fonts.css in the render-blocking chain). The file stays on disk as the
+    editable source. URLs are rewritten from css/-relative to
+    document-relative (css/../assets -> assets)."""
+    css_path = os.path.join(ROOT, "css", "fonts.css")
+    try:
+        return open(css_path, encoding="utf-8").read().replace("../assets/", "assets/")
+    except OSError:
+        return ""
+
+
+FONTS_INLINE = fonts_inline()
+
+
 def page(name, active, body, description):
     fname = name + ".html"
     # Per-page stylesheet (optional): css/pages/<name>.css. Lets a page own
@@ -411,7 +428,7 @@ def page(name, active, body, description):
      thumbnail the player shows before play), so the preview paints fast. -->
 <link rel="preconnect" href="https://i.ytimg.com">
 {font_preloads()}
-<link rel="stylesheet" href="{asset_ver('css/fonts.css')}">
+<style>{FONTS_INLINE}</style>
 {JSONLD}
 {css_href('css/style.css')}
 {page_css_link}
@@ -419,21 +436,26 @@ def page(name, active, body, description):
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHC78WR2RK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','G-QHC78WR2RK');</script>
 <!-- Accessibility widget (client's own UserWay account, same as the live
-     site). Deferred to the load event: it was render-blocking on every page
-     and the widget works identically once the page is up. -->
+     site). Starts only when the browser is idle after load, so its ~200 ms
+     of script evaluation stays out of TBT/TTI; the widget works
+     identically once the page is up. -->
 <script>
 window.addEventListener('load', function () {{
-  var s = document.createElement('script');
-  s.src = 'https://cdn.userway.org/widget.js';
-  s.setAttribute('data-account', 'veWiK0ku6v');
-  document.head.appendChild(s);
+  var run = function () {{
+    var s = document.createElement('script');
+    s.src = 'https://cdn.userway.org/widget.js';
+    s.setAttribute('data-account', 'veWiK0ku6v');
+    document.head.appendChild(s);
+  }};
+  if ('requestIdleCallback' in window) requestIdleCallback(run, {{ timeout: 2000 }});
+  else setTimeout(run, 1500);
 }});
 </script>
 </head>
 <body>
 {header(active) if name != 'news' else ''}
 {body if name == "news" else f"<main id=\"main\">\n{body}\n</main>\n" + footer()}
-<script src="{asset_ver('js/main.js')}"></script>
+<script defer src="{asset_ver('js/main.js')}"></script>
 </body>
 </html>"""
 
@@ -601,9 +623,19 @@ def img(src, alt, w=None, h=None, sizes=None, cls="", eager=False, decorative=Fa
     stem = os.path.splitext(src)[0]
     if widths:
         nat_w = v.get("natural", [w or 0, h or 0])[0]
-        tail = f"assets/img/{src} {nat_w}w"
         def srcset(fmt):
-            return ", ".join([f"assets/img/{stem}-{x}w.{fmt} {x}w" for x in widths] + [tail])
+            # Tail candidate must match the <source> format: pointing the
+            # AVIF/WebP srcset at the original JPG made wide viewports
+            # download the multi-hundred-KB original (desktop Lighthouse
+            # flagged 626 KB of image-delivery waste on the hero). The JPG
+            # srcset keeps the original as its tail (format matches); AVIF
+            # and WebP top out at their largest generated variant.
+            wide = widths[-1]
+            cands = [f"assets/img/{stem}-{x}w.{fmt} {x}w" for x in widths]
+            tail = f"assets/img/{src} {nat_w}w" if fmt == "jpg" else f"assets/img/{stem}-{wide}w.{fmt} {wide}w"
+            if tail.split(" ")[0] != cands[-1].split(" ")[0]:
+                cands.append(tail)
+            return ", ".join(cands)
         return (
             f'<picture>'
             f'<source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}">'
