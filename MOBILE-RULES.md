@@ -5,8 +5,15 @@ mobile-optimized; this rebuild was verified for desktop parity only and
 overflows horizontally on several phones/tablets. Make every page properly
 mobile-optimized **without changing the desktop look**.
 
+**Status — COMPLETE (2026-10-11).** Every page now renders with zero horizontal
+overflow at all tested widths; the numbers in the table below are the *pre-fix*
+baseline that motivated this protocol, not the current state. Outcome evidence
+(per-page overflow before → after, desktop screenshot diffs, touch-target
+audits) is summarised in [README §6d](README.md). This file is retained as the
+rules record (M1–M9) and the per-page ownership map for future work.
+
 Measured on 2026-10-11 (Playwright, Chromium, `scrollWidth` vs
-`clientWidth`, no scrolling):
+`clientWidth`, no scrolling) — **baseline, before the fixes:**
 
 | Page | 320 | 375 | 390 | 414 | 768 | 1024 |
 |---|---|---|---|---|---|---|

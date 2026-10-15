@@ -8,6 +8,14 @@ Built because the previous developer would not hand over the site's source. Ever
 the practice owns — every word, photo, review, and page — has been recovered from the
 live site and preserved in this repository, so the client now holds the complete code.
 
+**Documentation in this repository**
+
+| Doc | What it covers |
+|---|---|
+| [`ACCESSIBILITY.md`](ACCESSIBILITY.md) | VPAT-style WCAG 2.1 / 2.2 AA conformance report (53 criteria, evidence per criterion) |
+| [`MOBILE-RULES.md`](MOBILE-RULES.md) | Mobile acceptance rules M1–M9, per-page ownership, verification commands |
+| [`AGENTS.md`](AGENTS.md) | Build/verify/deploy commands, layout, and conventions for anyone working in this repo |
+
 ---
 
 ## 1. Ownership & licensing — read this first
@@ -55,7 +63,7 @@ Full record in [`recovered/`](recovered/):
   from every page of the live site
 - `recovered/reviews.json` — the 7 Google reviews (author, rating, date, text, avatar)
 
-**Site map (as found):**
+**Site map (this repo):**
 
 | Page | File | Notes |
 |---|---|---|
@@ -63,16 +71,21 @@ Full record in [`recovered/`](recovered/):
 | Meet Veronica Avery | `about-veronica.html` | Veronica's full story + 3 photos |
 | Conditions Treated | `conditions-treated.html` | 6 condition categories |
 | About Treatment | `about-treatment.html` | treatments + 12-image gallery + new-patient info |
-| Contact | `contact.html` | address, hours, phone, FAQ, map |
+| Contact | `contact.html` | address, hours, phone, FAQ, map, accessibility statement |
 | Office Policy | `office-policy.html` | fees/insurance, confidentiality, missed appointments |
 | Privacy Policy | `privacy-policy.html` | full legal text |
+| News archive | `news.html` | empty-state archive + search field (see note below) |
+| Branded 404 | `404.html` | same header/footer, `noindex`, deliberately not in the sitemap |
 
-**Found on the live site but intentionally not carried over:**
+**Notes on the live site's URL set:**
 
-- `/news/` — page was already empty on the live site (WordPress "nothing found"
-  placeholder). Nothing lost.
-- `/naomi-brebes/` — an old URL that redirects to `/about-veronica/`. Nothing lost.
-  (Worth setting up a redirect if that URL was ever shared publicly.)
+- `/news/` was already an empty WordPress archive on the live site. It is
+  carried over as `news.html` — the same empty state plus the search field the
+  live page had. The page is not linked from the nav or footer; it is reachable
+  via `sitemap.xml` and direct URL.
+- `/naomi-brebes/` — an old URL that redirected to `/about-veronica/`. The
+  redirect is preserved as a 301 in `nginx.conf` and in the portable
+  `_redirects` file (see §4).
 
 ---
 
@@ -93,7 +106,7 @@ python3 -m http.server 8099
 ```bash
 python3 build_images.py  # (re)generate responsive AVIF/WebP/JPEG image variants
 python3 build_fonts.py   # (re)download self-hosted OFL font faces (rarely needed)
-python3 build.py         # rebuilds all 8 HTML pages + minified css from source
+python3 build.py         # rebuilds all 9 HTML files (8 pages + 404.html) + minified css
 python3 verify.py        # acceptance checks incl. srcset/perf-wiring (see §6)
 ```
 
@@ -139,8 +152,7 @@ sudo docker compose up -d avery-acupuncture          # 127.0.0.1:8100 -> contain
 - [ ] Confirm the client controls DNS/hosting for `averyacupuncture.com`
 - [ ] Upload files, then visit the domain and walk every page (see §6 checklist)
 - [ ] Keep the WordPress install around read-only for 30 days as a rollback, then delete
-- [ ] Re-create the two old redirects (`/naomi-brebes/` → `/about-veronica/`) if the new
-      host supports them (Netlify `_redirects`, nginx `return 301`, etc.)
+- [x] Re-create the two old redirects (`/naomi-brebes/` → `/about-veronica/`) — done in `nginx.conf` + `_redirects`; confirm the new host honors one of them (nginx rule is live in Docker, `_redirects` covers Netlify/Cloudflare Pages)
 - [ ] Verify the Google Analytics property `G-QHC78WR2RK` is in the client's own Google
       account (it was kept from the live site for continuity; replace if not)
 - [ ] Confirm booking portal login ownership (UnifiedPractice account) — that account is
@@ -557,6 +569,46 @@ would soften the LCP element), and the three stylesheets stay as files
 rather than being inlined (they are cached for a year, while every HTML
 document is `no-cache` — inlining would re-send all 34 KB of CSS on every
 page navigation to save one round trip).
+
+### 6j. Final hardening pass (2026-10-13)
+
+Sweeping go-live pass — no visual change (verified: `verify.py` ALL CHECKS
+PASSED, `git diff --stat` shows only the lines below, local HTTP smoke test
+200s on all pages + sitemap/robots/`_redirects`/css/js):
+
+- **Production canonicals.** `SITE_URL` is now `https://averyacupuncture.com`
+  (was the staging tunnel host). Canonicals, OG URLs, `sitemap.xml`, and
+  `robots.txt` all point at the client's own domain; JSON-LD already did.
+  Rebuild with `python3 build.py` after any edit to keep them in sync.
+- **Branded 404.** `404.html` (same header/footer, homepage + phone links,
+  `noindex`, deliberately excluded from the sitemap) served via
+  `error_page 404 /404.html` in `nginx.conf`.
+- **Legacy redirect kept.** `/naomi-brebes` and `/naomi-brebes/` → 301 to
+  `/about-veronica.html` in `nginx.conf`, plus a portable `_redirects` file
+  for Netlify/Cloudflare-Pages-style hosts.
+- **Security headers (safe subset).** Added `Permissions-Policy:
+  camera=(), microphone=(), payment=()` and `Cross-Origin-Opener-Policy:
+  same-origin-allow-popups`. Deliberately NOT setting `Content-Security-Policy`
+  or `COEP` from here: the page mixes inline `<style>`/`<script>` with
+  YouTube/Facebook/Maps/GA/UserWay embeds, and a strict policy would break
+  embeds for zero practical gain on a form-less, cookie-less static site.
+  HSTS stays at the Cloudflare edge (the origin behind the tunnel is plain
+  HTTP, so an origin HSTS header would never reach visitors).
+- **SEO head.** Added `theme-color`, `og:image:alt/width/height` (measured
+  2000×1333, not guessed), and `twitter:title`/`twitter:description` on every
+  page via `build.py`.
+- **Validity.** Replaced the obsolete `<center>` tag in the footer with a CSS
+  class (`.wellness-center`); rendering unchanged.
+- **A11y hygiene.** FAQ buttons now carry `aria-controls` pointing at their
+  answer panels' new ids; dynamically created iframes (embed facades,
+  Facebook slot) get `referrerpolicy="strict-origin-when-cross-origin"`.
+- **Image hygiene.** `build_images.py` / `build_fonts.py` excluded from the
+  Docker build context (they are build-time tools, not runtime files).
+
+NOT verified in this pass: `nginx -t` (no nginx binary on this host — config
+uses only standard directives mirroring the existing style); a fresh full
+Lighthouse battery (no changes affect the load window — headers, meta tags,
+and deferred-only JS — but re-run §6h's battery after deploy for the record).
 
 ## 7. What changed vs. the live site
 

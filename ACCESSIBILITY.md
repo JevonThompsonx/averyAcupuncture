@@ -1,9 +1,10 @@
 # Accessibility Conformance Report (ACR)
-## averyacupuncture.com recreation — avery.jsquaredadventures.com
+## Avery Acupuncture — rebuilt static site for averyacupuncture.com
 
 | | |
 |---|---|
 | **Report date** | 2026-10-12 |
+| **Site tested** | The rebuilt site as served on the staging host `avery.jsquaredadventures.com` at the time of testing. The production canonical has been `https://averyacupuncture.com` since the 2026-10-13 hardening pass (README §6j) — re-run the §5 checks against the production domain before citing this report for go-live |
 | **Standard applied** | WCAG 2.1 Level AA, plus the criteria added at Level AA in WCAG 2.2 |
 | **Conformance claim** | **Supports** for 52 of 53 applicable criteria; **Partially Supports** for 1 (see §4 — `1.2.2 Captions`), with the exception documented and the remediation owner identified |
 | **Scope** | All eight pages of the site: index, about-veronica, conditions-treated, about-treatment, contact, office-policy, privacy-policy, news — desktop and mobile |
