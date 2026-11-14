@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://avery.jsquaredadventures.com/sitemap.xml
+Sitemap: https://averyacupuncture.com/sitemap.xml

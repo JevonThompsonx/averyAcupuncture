@@ -145,6 +145,7 @@
     if (allow) f.setAttribute("allow", allow);
     f.setAttribute("allowfullscreen", "");
     f.setAttribute("frameborder", "0");
+    f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     box.replaceWith(f);
   });
 
@@ -188,6 +189,7 @@
     f.setAttribute("scrolling", "no");
     f.setAttribute("frameborder", "0");
     f.setAttribute("allowtransparency", "true");
+    f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     f.setAttribute("loading", "lazy");
     slot.replaceWith(f);
   });

@@ -6,4 +6,6 @@
 recovered/
 verify.py
 build.py
+build_images.py
+build_fonts.py
 *.bak

@@ -98,8 +98,9 @@ CAL_ICON = ('<svg viewBox="0 0 20 19" fill="none" aria-hidden="true" focusable="
             '<line x1="14" y1="1" x2="14" y2="5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>')
 BOOKING_PREVIOUS = "https://patient.unifiedpractice.com/avery-acupuncture-natural-medicine-inc/booking/previous-visit"
 # Public origin of THIS rebuild (used for canonicals, sitemap, OG URLs).
-# If the site ever moves to its own domain, update this one constant.
-SITE_URL = "https://avery.jsquaredadventures.com"
+# Production domain — the staging tunnel (avery.jsquaredadventures.com) is only
+# a preview; search engines must index the client's own domain.
+SITE_URL = "https://averyacupuncture.com"
 # Natural image dimensions (measured once) so width/height attributes can
 # reserve layout space (no CLS) while CSS scales images down responsively.
 DIMS = {
@@ -294,10 +295,10 @@ def footer(variant="wide"):
     </section>
     <section class="footer-widget footer-widget--center" aria-label="Wellness and Yelp profiles">
       <div class="wellness-badge">
-        <center>
+        <div class="wellness-center">
         {img("wellness-badge-preview.jpg", "Wellness.com profile badge: 5 out of 5 stars, "
               "51 reviews", 160, 176, cls="wellness-badge-img")}<a class="wellness-link" href="https://www.wellness.com">Wellness.com</a><a class="wellness-link" href="https://www.wellness.com/dir/3245076/acupuncture-specialist/ca/paso-robles/veronica-avery-avery-acupuncture--natural-medicine-lac">My Profile</a>
-        </center>
+        </div>
         <p><a href="https://www.yelp.com/biz/avery-acupuncture-and-natural-medicine-paso-robles" target="_blank" rel="noopener">{img("Unknown.png", "People love us on Yelp", 100, 100)}</a></p>
       </div>
     </section>
@@ -418,8 +419,14 @@ def page(name, active, body, description):
 <meta property="og:type" content="website">
 <meta property="og:url" content="{SITE_URL}/{fname}">
 <meta property="og:image" content="{SITE_URL}/assets/img/Bamboo.jpg">
+<meta property="og:image:alt" content="Bamboo grove at Avery Acupuncture">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="1333">
 <meta property="og:site_name" content="Avery Acupuncture">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{TITLES[name]}">
+<meta name="twitter:description" content="{esc(description)}">
+<meta name="theme-color" content="#557d2f">
 <link rel="dns-prefetch" href="https://www.youtube.com">
 <link rel="dns-prefetch" href="https://www.facebook.com">
 <link rel="dns-prefetch" href="https://www.google.com">
@@ -895,8 +902,8 @@ def page_contact():
   <h2 class="fx">FAQ</h2>
   <div class="cp-faq__list fx">
     <div class="cp-faq__item is-open">
-      <button class="cp-faq__q" type="button" aria-expanded="true"><span class="cp-faq__icon">&times;</span>How do I book an appointment?</button>
-      <div class="cp-faq__a">
+      <button class="cp-faq__q" type="button" aria-expanded="true" aria-controls="faq-a-1"><span class="cp-faq__icon">&times;</span>How do I book an appointment?</button>
+      <div class="cp-faq__a" id="faq-a-1">
         <div class="cp-faq__a-inner">
           <p>We are currently accepting new patients! Please call <strong>805-400-9723</strong> to schedule an appointment, or click the link below. We look forward to meeting you soon!</p>
           <p><a class="cp-faq__book" href="{BOOKING_PREVIOUS}" target="_blank" rel="noopener">Book an Appointment</a></p>
@@ -904,16 +911,16 @@ def page_contact():
       </div>
     </div>
     <div class="cp-faq__item">
-      <button class="cp-faq__q" type="button" aria-expanded="false"><span class="cp-faq__icon">+</span>How do I cancel an appointment?</button>
-      <div class="cp-faq__a">
+      <button class="cp-faq__q" type="button" aria-expanded="false" aria-controls="faq-a-2"><span class="cp-faq__icon">+</span>How do I cancel an appointment?</button>
+      <div class="cp-faq__a" id="faq-a-2">
         <div class="cp-faq__a-inner">
           <p>If you need to change or cancel your appointment please do so with 24 hours notice. With the exception of emergencies, failure to do so will result in being charged the full fee for your appointment.</p>
         </div>
       </div>
     </div>
     <div class="cp-faq__item">
-      <button class="cp-faq__q" type="button" aria-expanded="false"><span class="cp-faq__icon">+</span>Do you accept insurance?</button>
-      <div class="cp-faq__a">
+      <button class="cp-faq__q" type="button" aria-expanded="false" aria-controls="faq-a-3"><span class="cp-faq__icon">+</span>Do you accept insurance?</button>
+      <div class="cp-faq__a" id="faq-a-3">
         <div class="cp-faq__a-inner">
           <p>If you have insurance, please bring your insurance card with you. For your convenience, we will gladly call to verify your acupuncture coverage including eligibility and benefits.</p>
         </div>
@@ -987,6 +994,18 @@ def page_news():
   </div>
 </div>"""
 
+def page_404_body():
+    return f"""
+{band("Page Not Found", 209)}
+<section class="op-sec op-sec--first">
+  <div class="wrap-max">
+    <div class="x-text fx">
+      <p>Sorry — the page you were looking for isn't here. It may have moved or the link may be outdated.</p>
+      <p><a href="index.html">Return to the homepage</a> or call us at <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> and we'll help you find what you need.</p>
+    </div>
+  </div>
+</section>"""
+
 PAGES = {
     "index.html":        ("index.html", page_index,       "Acupuncture & Natural Medicine in Paso Robles — Veronica Avery, Licensed Acupuncturist and Herbalist."),
     "about-veronica.html": ("about-veronica.html", page_about_veronica, "The story of Veronica Avery, Licensed Acupuncturist and Herbalist practicing Traditional Chinese Medicine in Paso Robles."),
@@ -1006,6 +1025,23 @@ def main():
         with open(os.path.join(ROOT, fname), "w", encoding="utf-8") as f:
             f.write(out)
         print(f"wrote {fname} ({len(out):,} bytes)")
+    # Custom 404 (served by nginx error_page; deliberately NOT in sitemap.xml
+    # and NOT in verify.py's page list — it is infrastructure, not content).
+    notfound = page("privacy-policy", "privacy-policy.html",
+                    page_404_body(),
+                    "Page not found — Avery Acupuncture in Paso Robles.")
+    notfound = notfound.replace("Privacy Policy | Avery Acupuncture",
+                                "Page Not Found | Avery Acupuncture")
+    notfound = notfound.replace('rel="canonical" href="https://averyacupuncture.com/privacy-policy.html"',
+                                'rel="canonical" href="https://averyacupuncture.com/404.html"')
+    notfound = notfound.replace("https://averyacupuncture.com/privacy-policy.html",
+                                "https://averyacupuncture.com/404.html")
+    # Keep it out of search indexes.
+    notfound = notfound.replace('<meta name="description"',
+                                '<meta name="robots" content="noindex">\n<meta name="description"', 1)
+    with open(os.path.join(ROOT, "404.html"), "w", encoding="utf-8") as f:
+        f.write(notfound)
+    print(f"wrote 404.html ({len(notfound):,} bytes)")
 
 if __name__ == "__main__":
     main()

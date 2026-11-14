@@ -1,0 +1,4 @@
+# Portable redirects for hosts that support the Netlify/_redirects format
+# (Netlify, Cloudflare Pages). nginx uses its own rule in nginx.conf;
+/naomi-brebes   /about-veronica.html   301
+/naomi-brebes/  /about-veronica.html   301
