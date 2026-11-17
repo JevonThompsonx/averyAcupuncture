@@ -1,7 +1,7 @@
 # Avery Acupuncture — static site image
 # Base pinned by digest (stack convention): nginx:1.27-alpine.
 # Digest: docker.io/library/nginx@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
-FROM nginx@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+FROM nginx@sha256:165ddde8751e75a1c907d24ef10d9f6deb08b57e0fe56caf67512486aff76d82
 
 # Server config (listen 8080, cache + gzip headers, security headers)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
